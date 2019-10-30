@@ -1,14 +1,12 @@
-package hm;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 import java.util.Scanner;
 
-import com.mysql.jdbc.*;
 
 public class HotelMain {
 
@@ -22,8 +20,12 @@ public class HotelMain {
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 
 	final private static String user = "root";
+<<<<<<< HEAD
 	final private static String pw = "Isigna918*";
 	//final private static String con = ho;
+=======
+	final private static String passwd = "12345678";
+>>>>>>> c9da1161c619bcd1c6e653abf177d066cf2c9a23
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		welcomeScreen();
@@ -34,8 +36,13 @@ public class HotelMain {
 		Class.forName("com.mysql.jdbc.Driver");
 
 		//connect = DriverManager.getConnection(host +"," + user + "," + passwd);
+<<<<<<< HEAD
 		//connect=DriverManager.getConnection("jdbc:mysql://localhost:3306/sys","root","Isigna918*");
 		connect = DriverManager.getConnection(host,user,pw);
+=======
+		connect=DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/sys","root","12345678");
+>>>>>>> c9da1161c619bcd1c6e653abf177d066cf2c9a23
 		statement = connect.createStatement();
 
 		rs = statement.executeQuery("select * from hotel");
@@ -86,7 +93,11 @@ public class HotelMain {
 		System.out.println("1. See status of each room");
 		System.out.println("2. Schedule an employee");
 		System.out.println("3. Process payment");
+<<<<<<< HEAD
 		System.out.println("4. Checkout");
+=======
+		System.out.println("4. Check guest out");
+>>>>>>> c9da1161c619bcd1c6e653abf177d066cf2c9a23
 		int choice = scanner.nextInt();
 		if (choice == 1) {
 			// scanner.close();
@@ -99,11 +110,19 @@ public class HotelMain {
 		} else if (choice == 3) {
 			cashOut();
 			// return;
+<<<<<<< HEAD
 		}
 		else if(choice ==4) {
 			checkOut();
 		}
 		else {
+=======
+		} else if (choice == 4) {
+			checkOut();
+			// return;
+		}
+			else {
+>>>>>>> c9da1161c619bcd1c6e653abf177d066cf2c9a23
 			System.out.println("Input is not a user type.");
 		}
 	}
@@ -113,9 +132,42 @@ public class HotelMain {
 
 		System.out.println("Please enter the room you would like to book");
 		int roomnum = scanner.nextInt();
+<<<<<<< HEAD
 		if(roomnum != 100 && roomnum!=110&&roomnum!=120&&roomnum!=130&&roomnum!=140&&roomnum!=150&&roomnum!=160&&roomnum!=170&&roomnum!=180&&roomnum!=190&&roomnum!=200) {
 			System.out.println("The room you are trying to book does not exist please try again");
 			guestBookRoom();
+=======
+		//System.out.println("Please enter the number of nights you would like to stay:");
+		//int numNights = scanner.nextInt();
+		//System.out.println("Please enter the day you would like the room (mm/dd/yyyy)");
+		//String date = scanner.next();
+		room.put(roomnum, true);
+		// scanner.close();
+		System.out.println(room);
+
+		connect=DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/sys","root","12345678");
+		statement = connect.createStatement();
+		//rs = statement.executeQuery("select roomNum from test_table");
+		java.sql.PreparedStatement ps = connect.prepareStatement("select count(*) from test_table where roomNum = ?");
+		ps.setInt(1,roomnum);
+		ResultSet rs = ps.executeQuery();
+		int n = 0;
+		int s = 0;
+		if(rs.next()) {
+		n = rs.getInt(1);
+		//s = rs.getInt(2);
+		}
+		if ( n == 0 ) { //The room they want to book is available, so store room in database.
+		   // do what ever you need, if the row exists
+			 String query = " insert into test_table (roomNum, status)"
+				        + " values (?, ?)";
+			 java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+		     preparedStmt.setInt (1, roomnum);
+		     preparedStmt.setInt (2, 0); //0=clean 1=dirty
+
+		     preparedStmt.execute();
+>>>>>>> c9da1161c619bcd1c6e653abf177d066cf2c9a23
 		}
 
 		connect=DriverManager.getConnection(host,user,pw);
@@ -156,6 +208,7 @@ public class HotelMain {
 		welcomeScreen();
 	}
 
+
 	public static void checkRoomStatus() throws ClassNotFoundException, SQLException {
 		//System.out.println("check room status");
 		printDB();
@@ -168,6 +221,53 @@ public class HotelMain {
 
 	public static void cashOut() {
 		System.out.println("cashout");
+	}
+
+	public static void checkOut() throws ClassNotFoundException, SQLException {
+		System.out.println("checkout");
+//		Scanner scanner = new Scanner(System.in);
+//
+//		//System.out.println("Please enter your full name:");
+//		//String name = scanner.next();
+//		System.out.println("Please enter the room you would like to check out from");
+//		int roomnum = scanner.nextInt();
+//		//System.out.println("Please enter the number of nights you would like to stay:");
+//		//int numNights = scanner.nextInt();
+//		//System.out.println("Please enter the day you would like the room (mm/dd/yyyy)");
+//		//String date = scanner.next();
+//		//room.put(roomnum, false);
+//		// scanner.close();
+//		//System.out.println(room);
+//
+//		connect=DriverManager.getConnection(
+//				"jdbc:mysql://localhost:3306/sys","root","12345678");
+//		statement = connect.createStatement();
+//		//rs = statement.executeQuery("select roomNum from test_table");
+//		java.sql.PreparedStatement ps = connect.prepareStatement("select count(*) from test_table where roomNum = ?");
+//		ps.setInt(1,roomnum);
+//		ResultSet rs = ps.executeQuery();
+//		int n = 0;
+//		int s = 0;
+//		if(rs.next()) {
+//		n = rs.getInt(1);
+//		//s = rs.getInt(2);
+//		}
+//		if ( n == 1 ) { //The room they want to book is available, so store room in database.
+//		   // do what ever you need, if the row exists
+//			 String query = " delete from test_table (roomNum, status)"
+//				        + " values (?, ?)";
+//			 java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+//		     preparedStmt.setInt (1, roomnum);
+//		     preparedStmt.setInt (2, 1); //0=clean 1=dirty
+//
+//		     preparedStmt.execute();
+//		}
+//
+//		else { //Room is alredy taken, notify guest and restart so they can try a different room
+//			System.out.println(n);
+//			System.out.println("That is not the room you s");
+//			guestBookRoom();
+//		}
 	}
 
 	public static void handleEmployee() throws ClassNotFoundException, SQLException {
