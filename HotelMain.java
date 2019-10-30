@@ -22,8 +22,8 @@ public class HotelMain {
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 
 	final private static String user = "root";
-	final private static String pw = "*****";
-	//final private static String con = ho;
+	final private static String pw = "Isigna918*";
+	// final private static String con = ho;
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		welcomeScreen();
@@ -33,15 +33,15 @@ public class HotelMain {
 	public static void printDB() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
 
-
-		connect = DriverManager.getConnection(host,user,pw);
+		// connect = DriverManager.getConnection(host +"," + user + "," + passwd);
+		// connect=DriverManager.getConnection("jdbc:mysql://localhost:3306/sys","root","Isigna918*");
+		connect = DriverManager.getConnection(host, user, pw);
 		statement = connect.createStatement();
 
 		rs = statement.executeQuery("select * from hotel");
 
-		while(rs.next())
-			System.out.println(rs.getInt(1)+"  "+rs.getString(2));
-
+		while (rs.next())
+			System.out.println(rs.getInt(1) + "  " + rs.getString(2));
 
 	}
 
@@ -86,6 +86,7 @@ public class HotelMain {
 		System.out.println("2. Schedule an employee");
 		System.out.println("3. Process payment");
 		System.out.println("4. Checkout");
+		System.out.println("5. Get clean status of roms");
 		int choice = scanner.nextInt();
 		if (choice == 1) {
 			// scanner.close();
@@ -98,11 +99,11 @@ public class HotelMain {
 		} else if (choice == 3) {
 			cashOut();
 			// return;
-		}
-		else if(choice ==4) {
+		} else if (choice == 4) {
 			checkOut();
-		}
-		else {
+		} else if (choice == 5) {
+			cleanStatus();
+		} else {
 			System.out.println("Input is not a user type.");
 		}
 	}
@@ -112,19 +113,21 @@ public class HotelMain {
 
 		System.out.println("Please enter the room you would like to book");
 		int roomnum = scanner.nextInt();
-		if(roomnum != 100 && roomnum!=110&&roomnum!=120&&roomnum!=130&&roomnum!=140&&roomnum!=150&&roomnum!=160&&roomnum!=170&&roomnum!=180&&roomnum!=190&&roomnum!=200) {
+		if (roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
+				&& roomnum != 160 && roomnum != 170 && roomnum != 180 && roomnum != 190 && roomnum != 200) {
 			System.out.println("The room you are trying to book does not exist please try again");
 			guestBookRoom();
 		}
 
-		connect=DriverManager.getConnection(host,user,pw);
+		connect = DriverManager.getConnection(host, user, pw);
 		statement = connect.createStatement();
-		//java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO hotel(vac) where roomNum = ?");
-		 String query = "UPDATE hotel SET vac = 1 WHERE roomNum = ?";
-		 java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
-		 preparedStmt.setInt (1, roomnum);
+		// java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO
+		// hotel(vac) where roomNum = ?");
+		String query = "UPDATE hotel SET vac = 1 WHERE roomNum = ?";
+		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+		preparedStmt.setInt(1, roomnum);
 
-		 preparedStmt.execute();
+		preparedStmt.execute();
 
 	}
 
@@ -133,19 +136,21 @@ public class HotelMain {
 
 		System.out.println("Please enter the room you would like to checkout from?");
 		int roomnum = scanner.nextInt();
-		if(roomnum != 100 && roomnum!=110&&roomnum!=120&&roomnum!=130&&roomnum!=140&&roomnum!=150&&roomnum!=160&&roomnum!=170&&roomnum!=180&&roomnum!=190&&roomnum!=200) {
+		if (roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
+				&& roomnum != 160 && roomnum != 170 && roomnum != 180 && roomnum != 190 && roomnum != 200) {
 			System.out.println("The room you are trying to checkout of does not exist please try again");
 			checkOut();
 		}
 
-		connect=DriverManager.getConnection(host,user,pw);
+		connect = DriverManager.getConnection(host, user, pw);
 		statement = connect.createStatement();
-		//java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO hotel(vac) where roomNum = ?");
-		 String query = "UPDATE hotel SET vac = 0 WHERE roomNum = ?";
-		 java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
-		 preparedStmt.setInt (1, roomnum);
+		// java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO
+		// hotel(vac) where roomNum = ?");
+		String query = "UPDATE hotel SET vac = 0 WHERE roomNum = ?";
+		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+		preparedStmt.setInt(1, roomnum);
 
-		 preparedStmt.execute();
+		preparedStmt.execute();
 
 	}
 
@@ -156,9 +161,9 @@ public class HotelMain {
 	}
 
 	public static void checkRoomStatus() throws ClassNotFoundException, SQLException {
-		//System.out.println("check room status");
+		// System.out.println("check room status");
 		printDB();
-		//System.out.println(room);
+		// System.out.println(room);
 	}
 
 	public static void scheduleEmployee() {
@@ -167,6 +172,30 @@ public class HotelMain {
 
 	public static void cashOut() {
 		System.out.println("cashout");
+	}
+
+	public static void cleanStatus() throws SQLException {
+		System.out.println("Enter in the room number you want to check the clean status of");
+		Scanner scanner = new Scanner(System.in);
+		int roomnum = scanner.nextInt();
+		if (roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
+				&& roomnum != 160 && roomnum != 170 && roomnum != 180 && roomnum != 190 && roomnum != 200) {
+			System.out.println("The room you are looking for does not exist please try again");
+			cleanStatus();
+		}
+		connect = DriverManager.getConnection(host, user, pw);
+		PreparedStatement s = (PreparedStatement)connect.prepareStatement("SELECT clean FROM hotel WHERE roomNum = ?");
+		 s.setInt(1,roomnum);
+		rs =s.executeQuery();
+		while (rs.next()) {
+			if(rs.getInt(1)==0) {
+			System.out.println("Room "+roomnum+" is clean");
+			}
+			else {
+				System.out.println("Room "+roomnum+" needs cleaning");
+			}
+		}
+
 	}
 
 	public static void handleEmployee() throws ClassNotFoundException, SQLException {
