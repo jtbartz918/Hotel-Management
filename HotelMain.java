@@ -79,6 +79,7 @@ public class HotelMain {
 		System.out.println("3. Process payment");
 		System.out.println("4. Checkout");
 		System.out.println("5. Check cleanliness status of room");
+		System.out.println("6. Get price");
 		int choice = scanner.nextInt();
 		if (choice == 1) {
 			// scanner.close();
@@ -95,16 +96,19 @@ public class HotelMain {
 			checkOut();
 		} else if (choice == 5) {
 			cleanStatus();
-		}	else {
+		} else if (choice == 6) {
+			getPrice();
+		} else {
 			System.out.println("Input is not a user type.");
 		}
 	}
 
 	public static void guestBookRoom() throws SQLException {
 		Scanner scanner = new Scanner(System.in);
-
 		System.out.println("Please enter the room you would like to book");
 		int roomnum = scanner.nextInt();
+		System.out.println("Please enter the amount of nights you wish to stay");
+		int nights = scanner.nextInt();
 		if (roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
 				&& roomnum != 160 && roomnum != 170 && roomnum != 180 && roomnum != 190 && roomnum != 200) {
 			System.out.println("The room you are trying to book does not exist please try again");
@@ -115,10 +119,10 @@ public class HotelMain {
 		statement = connect.createStatement();
 		// java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO
 		// hotel(vac) where roomNum = ?");
-		String query = "UPDATE hotel SET vac = 1 WHERE roomNum = ?";
+		String query = "UPDATE hotel SET vac = 1, clean = 1, nights = ? WHERE roomNum = ?";
 		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
-		preparedStmt.setInt(1, roomnum);
-
+		preparedStmt.setInt(1, nights);
+		preparedStmt.setInt(2, roomnum);
 		preparedStmt.execute();
 
 	}
@@ -138,7 +142,7 @@ public class HotelMain {
 		statement = connect.createStatement();
 		// java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO
 		// hotel(vac) where roomNum = ?");
-		String query = "UPDATE hotel SET vac = 0 WHERE roomNum = ?";
+		String query = "UPDATE hotel SET vac = 0, clean = 0, nights = 0 WHERE roomNum = ?";
 		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
 		preparedStmt.setInt(1, roomnum);
 
@@ -158,6 +162,26 @@ public class HotelMain {
 		// System.out.println(room);
 	}
 
+	public static void getPrice() throws SQLException {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Please enter the room you are staying in");
+		int roomnum = scanner.nextInt();
+		if (roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
+				&& roomnum != 160 && roomnum != 170 && roomnum != 180 && roomnum != 190 && roomnum != 200) {
+			System.out.println("The room you are trying to checkout of does not exist please try again");
+			getPrice();
+		}
+		connect = DriverManager.getConnection(host, user, pw);
+		PreparedStatement s = (PreparedStatement) connect
+				.prepareStatement("SELECT nights FROM hotel WHERE roomNum = ?");
+		s.setInt(1, roomnum);
+		rs = s.executeQuery();
+		while (rs.next()) {
+			int pr = rs.getInt(1) * 300;
+			System.out.println("$" + pr);
+		}
+	}
+
 	public static void scheduleEmployee() {
 		System.out.println("schedule");
 	}
@@ -166,23 +190,22 @@ public class HotelMain {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Please enter the room you would like to view");
 		int roomnum = scanner.nextInt();
-		if(roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
+		if (roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
 				&& roomnum != 160 && roomnum != 170 && roomnum != 180 && roomnum != 190 && roomnum != 200) {
 			System.out.println("That room does not exisist");
 			cleanStatus();
 		}
 		connect = DriverManager.getConnection(host, user, pw);
-		PreparedStatement s = (PreparedStatement)connect.prepareStatement("SELECT clean FROM hotel WHERE roomNum = ?");
-		s.setInt(1,roomnum);
+		PreparedStatement s = (PreparedStatement) connect.prepareStatement("SELECT clean FROM hotel WHERE roomNum = ?");
+		s.setInt(1, roomnum);
 		rs = s.executeQuery();
 		while (rs.next()) {
-			if(rs.getInt(1) == 0) {
+			if (rs.getInt(1) == 0) {
 				System.out.println("Room: " + roomnum + " is clean");
 				System.out.println("");
 				System.out.println("");
 
-			}
-			else {
+			} else {
 				System.out.println("Room: " + roomnum + " is dirty");
 				System.out.println("");
 				System.out.println("");
