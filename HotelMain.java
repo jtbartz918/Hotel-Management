@@ -33,8 +33,7 @@ public class HotelMain {
 	public static void printDB() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
 
-		//connect = DriverManager.getConnection(host +"," + user + "," + passwd);
-		//connect=DriverManager.getConnection("jdbc:mysql://localhost:3306/sys","root","Isigna918*");
+
 		connect = DriverManager.getConnection(host,user,pw);
 		statement = connect.createStatement();
 
