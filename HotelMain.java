@@ -1,3 +1,5 @@
+package hm;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,8 +19,11 @@ public class HotelMain {
 	private static ResultSet rs = null;
 
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
+
 	final private static String user = "root";
+
 	final private static String pw = "12345678";
+
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		welcomeScreen();
@@ -27,6 +32,7 @@ public class HotelMain {
 
 	public static void printDB() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
+
 		connect = DriverManager.getConnection(host, user, pw);
 		statement = connect.createStatement();
 
@@ -78,8 +84,10 @@ public class HotelMain {
 		System.out.println("2. Schedule an employee");
 		System.out.println("3. Process payment");
 		System.out.println("4. Checkout");
+
 		System.out.println("5. Check cleanliness status of room");
 		System.out.println("6. Get price");
+
 		int choice = scanner.nextInt();
 		if (choice == 1) {
 			// scanner.close();
@@ -96,8 +104,10 @@ public class HotelMain {
 			checkOut();
 		} else if (choice == 5) {
 			cleanStatus();
+
 		} else if (choice == 6) {
 			getPrice();
+
 		} else {
 			System.out.println("Input is not a user type.");
 		}
@@ -105,10 +115,12 @@ public class HotelMain {
 
 	public static void guestBookRoom() throws SQLException {
 		Scanner scanner = new Scanner(System.in);
+
 		System.out.println("Please enter the room you would like to book");
 		int roomnum = scanner.nextInt();
 		System.out.println("Please enter the amount of nights you wish to stay");
 		int nights = scanner.nextInt();
+
 		if (roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
 				&& roomnum != 160 && roomnum != 170 && roomnum != 180 && roomnum != 190 && roomnum != 200) {
 			System.out.println("The room you are trying to book does not exist please try again");
@@ -119,10 +131,12 @@ public class HotelMain {
 		statement = connect.createStatement();
 		// java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO
 		// hotel(vac) where roomNum = ?");
+
 		String query = "UPDATE hotel SET vac = 1, clean = 1, nights = ? WHERE roomNum = ?";
 		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
 		preparedStmt.setInt(1, nights);
 		preparedStmt.setInt(2, roomnum);
+
 		preparedStmt.execute();
 
 	}
@@ -142,7 +156,9 @@ public class HotelMain {
 		statement = connect.createStatement();
 		// java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO
 		// hotel(vac) where roomNum = ?");
+
 		String query = "UPDATE hotel SET vac = 0, clean = 0, nights = 0 WHERE roomNum = ?";
+
 		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
 		preparedStmt.setInt(1, roomnum);
 
@@ -160,6 +176,7 @@ public class HotelMain {
 		// System.out.println("check room status");
 		printDB();
 		// System.out.println(room);
+
 	}
 
 	public static void getPrice() throws SQLException {
@@ -180,6 +197,7 @@ public class HotelMain {
 			int pr = rs.getInt(1) * 300;
 			System.out.println("$" + pr);
 		}
+
 	}
 
 	public static void scheduleEmployee() {
@@ -213,8 +231,10 @@ public class HotelMain {
 		}
 	}
 
+
 	public static void cashOut() {
 		System.out.println("cashout");
+
 	}
 
 	public static void handleEmployee() throws ClassNotFoundException, SQLException {
