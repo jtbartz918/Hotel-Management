@@ -9,6 +9,7 @@ import java.util.Scanner;
 import com.mysql.jdbc.PreparedStatement;
 
 public class Employee extends HotelMain {
+
 	static String userType;
 	private static Connection connect = null;
 	private static Statement statement = null;
@@ -18,24 +19,42 @@ public class Employee extends HotelMain {
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 	final private static String user = "root";
 	final private static String pw = "12345678";
+	
 
-	public static void printDB() throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		connect = DriverManager.getConnection(host, user, pw);
-		statement = connect.createStatement();
-
-		rs = statement.executeQuery("select * from hotel");
-
-		while (rs.next())
-			System.out.println(rs.getInt(1) + "  " + rs.getString(2));
-
+	public static void employeeTypeScreen() throws ClassNotFoundException, SQLException {
+		System.out.println("Menu:");
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("1. Manager");
+		System.out.println("2. HR");
+		System.out.println("3. Front Desk");
+		System.out.println("4. Security");
+		System.out.println("5. Restaurant");
+		int choice = scanner.nextInt();
+		if (choice == 1) {
+			// scanner.close();
+			managerMainScreen();
+			return;
+		} else if (choice == 2) {
+			// scanner.close();
+			hrMainScreen();
+			// return;
+		} else if (choice == 3) {
+			employeeMainScreen();
+			// return;
+		} else if (choice == 4) {
+			employeeMainScreen();
+		} else if (choice == 5) {
+			employeeMainScreen();
+		} else {
+			System.out.println("Input is not a user type.");
+		}
 	}
 
 	public static void employeeMainScreen() throws ClassNotFoundException, SQLException {
 		System.out.println("Menu:");
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("1. See status of each room");
-		System.out.println("2. Schedule an employee");
+		System.out.println("2. Something");
 		System.out.println("3. Process payment");
 		System.out.println("4. Checkout");
 		System.out.println("5. Check cleanliness status of room");
@@ -47,7 +66,7 @@ public class Employee extends HotelMain {
 			return;
 		} else if (choice == 2) {
 			// scanner.close();
-			scheduleEmployee();
+			System.out.println("Hello world");
 			// return;
 		} else if (choice == 3) {
 			cashOut();
@@ -58,6 +77,44 @@ public class Employee extends HotelMain {
 			cleanStatus();
 		} else if (choice == 6) {
 			getPrice();
+		} else {
+			System.out.println("Input is not a user type.");
+		}
+	}
+
+	public static void managerMainScreen() throws ClassNotFoundException, SQLException {
+		System.out.println("Menu:");
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("1. Manage Employee Information");
+		int choice = scanner.nextInt();
+		if (choice == 1) {
+			// scanner.close();
+			manageUser();
+			return;
+		} else {
+			System.out.println("Input is not a user type.");
+		}
+	}
+
+	public static void hrMainScreen() throws ClassNotFoundException, SQLException {
+		System.out.println("Menu:");
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("1. Hire an Employee");
+		System.out.println("2. Fire an Employee");
+		System.out.println("3. Schedule an Employee");
+		int choice = scanner.nextInt();
+		if (choice == 1) {
+			// scanner.close();
+			System.out.println("You're hired!");
+			return;
+		} else if (choice == 2) {
+			// scanner.close();
+			System.out.println("You're fired!");
+			// return;
+		} else if (choice == 3) {
+			// scanner.close();
+			scheduleEmployee();
+			// return;
 		} else {
 			System.out.println("Input is not a user type.");
 		}
@@ -111,8 +168,18 @@ public class Employee extends HotelMain {
 		// System.out.println(room);
 	}
 
-	public static void scheduleEmployee() {
-		System.out.println("schedule");
+	public static void scheduleEmployee() throws ClassNotFoundException, SQLException{
+		System.out.println("Schedule: ");
+		printSchedule();
+		System.out.println("Who would you like to schedule: ");
+		Scanner scanner = new Scanner(System.in);
+		String input = scanner.next();
+		System.out.println("What day would you like to schedule them: ");
+		Scanner sc = new Scanner(System.in);
+		String day = sc.next();
+		System.out.println("What time would you like to schedule them: ");
+		Scanner scan = new Scanner(System.in);
+		String time = scan.next();
 	}
 
 	public static void cleanStatus() throws SQLException {
@@ -141,16 +208,62 @@ public class Employee extends HotelMain {
 			}
 		}
 	}
-	
+
 	public static void handleEmployee() throws ClassNotFoundException, SQLException {
-		employeeMainScreen();
+		employeeTypeScreen();
 		userType = "none";
 		welcomeScreen();
 
 	}
-	
+
 	public static void cashOut() {
 		System.out.println("cashout");
+	}
+
+	public static void manageUser() throws ClassNotFoundException, SQLException {
+		System.out.println("Which employee do you want to view");
+		 Scanner scanner = new Scanner(System.in);
+		 String input = scanner.next();
+		if (!input.equals("Alex") && !input.equals("Alex") && !input.equals("Aaron") && !input.equals("Joe")
+				&& !input.equals("Jonah") && !input.equals("Sara") && !input.equals("Sue") && !input.equals("Isaac")) {
+			System.out.println("That employee does not exist");
+			managerMainScreen();
+		} else {
+			manageUserOptions(input);
+		}
+	}
+
+	public static void manageUserOptions(String input) {
+		System.out.println("Menu:");
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("1. View Pay Monetary/Non-Monetary");
+		System.out.println("2. View Employee Value");
+		System.out.println("3. View Employee Schedule");
+		System.out.println("4. View Employee Personal Information");
+		System.out.println("5. View Employee Job Position");
+		int choice = scanner.nextInt();
+		if (choice == 1) {
+			// scanner.close();
+			System.out.println("this employee makes $100");
+		} else if (choice == 2) {
+			// scanner.close();
+			System.out.println("This employee is worth $1000000");
+			// return;
+		} else if (choice == 3) {
+			// scanner.close();
+			System.out.println("Schedule");
+			// return;
+		} else if (choice == 4) {
+			// scanner.close();
+			System.out.println("First Name, Last Name, Address");
+			// return;
+		} else if (choice == 5) {
+			// scanner.close();
+			System.out.println("Job title");
+			// return;
+		} else {
+			System.out.println("That is not an option to be selected");
+		}
 	}
 
 }
