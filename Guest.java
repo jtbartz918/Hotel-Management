@@ -18,7 +18,9 @@ public class Guest extends HotelMain {
 
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 	final private static String user = "root";
-	final private static String pw = "******";
+	final private static String pw = "Isigna918*";
+
+	public static String HotelUser = "";
 
 	public static void printDB() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
@@ -32,14 +34,14 @@ public class Guest extends HotelMain {
 
 	}
 
-	public static void guestBookRoom() throws SQLException {
+	public static void guestBookRoom(String uname) throws SQLException {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Please enter the room you would like to book");
 		int roomnum = scanner.nextInt();
 		if (roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
 				&& roomnum != 160 && roomnum != 170 && roomnum != 180 && roomnum != 190 && roomnum != 200) {
 			System.out.println("The room you are trying to book does not exist please try again");
-			guestBookRoom();
+			guestBookRoom(uname);
 		}
 		System.out.println("Please enter the amount of nights you wish to stay");
 		int nights = scanner.nextInt();
@@ -48,7 +50,7 @@ public class Guest extends HotelMain {
 		statement = connect.createStatement();
 		// java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO
 		// hotel(vac) where roomNum = ?");
-		String query = "UPDATE hotel SET vac = 1, clean = 1, nights = ? WHERE roomNum = ?";
+		String query = "UPDATE hotel SET vac = 1, clean = 1, nights = ?, guest='"+uname+"' WHERE roomNum = ?";
 		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
 		preparedStmt.setInt(1, nights);
 		preparedStmt.setInt(2, roomnum);
@@ -69,15 +71,39 @@ public class Guest extends HotelMain {
 			Scanner c = new Scanner(System.in);
 			String pass = c.nextLine();
 			verify(uname,pass);
+			//HotelUser = uname;
+
 		}
 
 		if(choice == 2) {
 			createNewAccount();
-		}
 
-		//guestBookRoom();
+		}
+		guestHomePage();
+		//guestBookRoom(HotelUser);
 		userType = "none";
 		//welcomeScreen();
+	}
+
+	private static void guestHomePage() throws SQLException {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Press 1 to book a room, press 2 to view your rewards");
+		int choice = sc.nextInt();
+		if(choice == 1) {
+			guestBookRoom(HotelUser);
+		}
+		if(choice ==2) {
+			connect = DriverManager.getConnection(host, user, pw);
+			Statement stmt = connect.createStatement();
+
+			rs = stmt.executeQuery("SELECT points FROM Guest WHERE uname = '"+HotelUser+"'" );
+			while(rs.next()) {
+				System.out.println("You have "+rs.getInt(1)+" points left");
+			}
+
+		}
+
 	}
 
 	private static void createNewAccount() throws SQLException {
@@ -108,8 +134,30 @@ public class Guest extends HotelMain {
 		}
 
 		Statement stmt2 = connect.createStatement();
-		String q = "INSERT INTO Guest VALUES ('test1','test2','test3','test4');";
+		String q = "INSERT INTO Guest (fname, lname, uname, pass) VALUES ('"+fname+"','"+lname+"','"+uname+"','"+pass+"');";
 		stmt2.executeUpdate(q);
+
+		System.out.println("Your user name and account has been created, we would like to gather some more information");
+		System.out.println("Please enter your email");
+		Scanner s5 = new Scanner(System.in);
+		String email = s5.nextLine();
+		System.out.println("Please enter your phone number");
+		Scanner s6 = new Scanner(System.in);
+		String phone = s6.nextLine();
+		System.out.println("Any special prefrences? (bed size, pool, number of beds, smoking etc...)");
+		Scanner s7 = new Scanner(System.in);
+		String pref = s7.nextLine();
+
+		Statement stmt3 = connect.createStatement();
+		String q1 = "UPDATE Guest SET email = '"+email+"', phone = '"+phone+"', pref = '"+pref+"', points = 0 WHERE uname = '"+uname+"'";
+
+
+		stmt3.executeUpdate(q1);
+
+		System.out.println("Welcom "+fname+"! So far you have zero points but after your first stay they will add up! You can log in at any time to see how many points you have. Remember, every 10,000 points is a free night!");
+		HotelUser=uname;
+
+
 	}
 
 	private static void verify(String uname, String pass) throws SQLException {
@@ -121,6 +169,8 @@ public class Guest extends HotelMain {
 		while(rs.next()) {
 			if(rs.getInt(1)==1) {
 				System.out.println("Welcome back "+uname);
+				HotelUser = uname;
+
 			}
 			else {
 				System.out.println("Sorry the username or password you entered is inccorect");
