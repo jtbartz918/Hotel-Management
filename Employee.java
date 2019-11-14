@@ -241,7 +241,7 @@ public class Employee extends HotelMain {
 		}
 	}
 
-	public static void manageUserOptions(String input) throws SQLException {
+	public static void manageUserOptions(String input) throws SQLException, ClassNotFoundException {
 		System.out.println("Menu:");
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("1. View/Update Pay Monetary/Non-Monetary");
@@ -288,7 +288,7 @@ public class Employee extends HotelMain {
 			}
 		} else if (choice == 3) {
 			// scanner.close();
-			System.out.println("Schedule");
+			printSchedule();
 			// return;
 		} else if (choice == 4) {
 			connect = DriverManager.getConnection(host, user, pw);
