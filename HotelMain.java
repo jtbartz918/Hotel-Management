@@ -40,9 +40,9 @@ public class HotelMain {
 	public static void welcomeScreen() throws ClassNotFoundException, SQLException {
 		loginScreen();
 		if (userType == "guest") {
-			handleGuest();
+			Guest.handleGuest();
 		} else if (userType == "employee") {
-			handleEmployee();
+			Employee.handleEmployee();;
 		}
 	}
 
