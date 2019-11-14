@@ -179,6 +179,15 @@ public class Employee extends HotelMain {
 		System.out.println("What time would you like to schedule them: ");
 		Scanner scan = new Scanner(System.in);
 		String time = scan.next();
+		connect = DriverManager.getConnection(host, user, pw);
+		Statement stmt3 = connect.createStatement();
+		rs = stmt3.executeQuery("SELECT day, time FROM schedule WHERE who = '" + input + "'");
+		while (rs.next()) {
+			day = rs.getString(1);
+			time = rs.getString(2);
+			System.out.println(input+ " is schduled: " + day + time);
+			
+		}
 	}
 
 	public static void cleanStatus() throws SQLException {
