@@ -19,7 +19,6 @@ public class Employee extends HotelMain {
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 	final private static String user = "root";
 	final private static String pw = "12345678";
-	
 
 	public static void employeeTypeScreen() throws ClassNotFoundException, SQLException {
 		System.out.println("Menu:");
@@ -168,7 +167,7 @@ public class Employee extends HotelMain {
 		// System.out.println(room);
 	}
 
-	public static void scheduleEmployee() throws ClassNotFoundException, SQLException{
+	public static void scheduleEmployee() throws ClassNotFoundException, SQLException {
 		System.out.println("Schedule: ");
 		printSchedule();
 		System.out.println("Who would you like to schedule: ");
@@ -222,8 +221,8 @@ public class Employee extends HotelMain {
 
 	public static void manageUser() throws ClassNotFoundException, SQLException {
 		System.out.println("Which employee do you want to view");
-		 Scanner scanner = new Scanner(System.in);
-		 String input = scanner.next();
+		Scanner scanner = new Scanner(System.in);
+		String input = scanner.next();
 		if (!input.equals("Alex") && !input.equals("Alex") && !input.equals("Aaron") && !input.equals("Joe")
 				&& !input.equals("Jonah") && !input.equals("Sara") && !input.equals("Sue") && !input.equals("Isaac")) {
 			System.out.println("That employee does not exist");
@@ -233,10 +232,10 @@ public class Employee extends HotelMain {
 		}
 	}
 
-	public static void manageUserOptions(String input) {
+	public static void manageUserOptions(String input) throws SQLException {
 		System.out.println("Menu:");
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("1. View Pay Monetary/Non-Monetary");
+		System.out.println("1. View/Update Pay Monetary/Non-Monetary");
 		System.out.println("2. View Employee Value");
 		System.out.println("3. View Employee Schedule");
 		System.out.println("4. View Employee Personal Information");
@@ -244,23 +243,60 @@ public class Employee extends HotelMain {
 		int choice = scanner.nextInt();
 		if (choice == 1) {
 			// scanner.close();
-			System.out.println("this employee makes $100");
+			connect = DriverManager.getConnection(host, user, pw);
+			Statement stmt3 = connect.createStatement();
+			rs = stmt3.executeQuery("SELECT pay FROM employee WHERE name = '" + input + "'");
+			while (rs.next()) {
+				int pay = rs.getInt(1);
+				System.out.print(input + " makes $" + pay);
+			}
+			Statement stmt1 = connect.createStatement();
+			rs = stmt1.executeQuery("SELECT notMoney FROM employee WHERE name = '" + input + "'");
+			while (rs.next()) {
+				String ben = rs.getString(1);
+				System.out.println(" and gets these benefits " + ben);
+			}
+			System.out.println("Would you like to change their pay? (yes or no)");
+			Scanner sca = new Scanner(System.in);
+			String pick = sca.next();
+			if (pick.equals("yes")) {
+				System.out.println("What would you like to change their pay too: ");
+				Scanner scann = new Scanner(System.in);
+				int newPay = scann.nextInt();
+				String query = "UPDATE employee SET pay = "+ newPay +" WHERE name = '" + input + "'";
+				java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+				preparedStmt.execute();
+			} else {
+				System.out.println("You selected no returning to main menu.");
+			}
 		} else if (choice == 2) {
-			// scanner.close();
-			System.out.println("This employee is worth $1000000");
-			// return;
+			connect = DriverManager.getConnection(host, user, pw);
+			Statement stmt3 = connect.createStatement();
+			rs = stmt3.executeQuery("SELECT value FROM employee WHERE name = '" + input + "'");
+			while (rs.next()) {
+				int val = rs.getInt(1);
+				System.out.println(input + " has a value to this company of $" + val);
+			}
 		} else if (choice == 3) {
 			// scanner.close();
 			System.out.println("Schedule");
 			// return;
 		} else if (choice == 4) {
-			// scanner.close();
-			System.out.println("First Name, Last Name, Address");
-			// return;
+			connect = DriverManager.getConnection(host, user, pw);
+			Statement stmt3 = connect.createStatement();
+			rs = stmt3.executeQuery("SELECT personalInfo FROM employee WHERE name = '" + input + "'");
+			while (rs.next()) {
+				String pi = rs.getString(1);
+				System.out.println(pi);
+			}
 		} else if (choice == 5) {
-			// scanner.close();
-			System.out.println("Job title");
-			// return;
+			connect = DriverManager.getConnection(host, user, pw);
+			Statement stmt3 = connect.createStatement();
+			rs = stmt3.executeQuery("SELECT title FROM employee WHERE name = '" + input + "'");
+			while (rs.next()) {
+				String title = rs.getString(1);
+				System.out.println(input + " job title is " + title);
+			}
 		} else {
 			System.out.println("That is not an option to be selected");
 		}
