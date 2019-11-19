@@ -20,7 +20,7 @@ public class Employee extends HotelMain {
 
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 	final private static String user = "root";
-	final private static String pw = "*****";
+	final private static String pw = "******";
 
 	public static void employeeTypeScreen() throws ClassNotFoundException, SQLException {
 		System.out.println("Menu:");
@@ -85,7 +85,7 @@ public class Employee extends HotelMain {
 		}
 	}
 
-	private static void checkIn() throws SQLException {
+	private static void checkIn() throws SQLException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		Scanner scanner = new Scanner(System.in);
 		Scanner scanner2 = new Scanner(System.in);
@@ -106,11 +106,25 @@ public class Employee extends HotelMain {
 		statement = connect.createStatement();
 		// java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO
 		// hotel(vac) where roomNum = ?");
-		String query = "UPDATE hotel SET vac = 1, clean = 1, nights = ?, guest='" + uname + "' WHERE roomNum = ?";
-		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
-		preparedStmt.setInt(1, nights);
-		preparedStmt.setInt(2, roomnum);
-		preparedStmt.execute();
+		Statement stmt = connect.createStatement();
+		String query2 = "SELECT COUNT(*) FROM Guest WHERE uname = '"+uname+"'";
+		rs=stmt.executeQuery(query2);
+		while(rs.next()) {
+			if(rs.getInt(1)==1) {
+				String query = "UPDATE hotel SET vac = 1, clean = 1, nights = ?, guest='" + uname + "' WHERE roomNum = ?";
+				java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+				preparedStmt.setInt(1, nights);
+				preparedStmt.setInt(2, roomnum);
+				preparedStmt.execute();
+			}
+			else {
+				System.out.println("That guest username is not in the system, please check the database or ask the guest again.");
+
+			}
+		}
+		employeeMainScreen();
+
+
 
 	}
 
@@ -228,6 +242,10 @@ public class Employee extends HotelMain {
 		} else if (v == 2) {
 			return 1;
 
+		}
+		else {
+			System.out.println("You accidently entered an invalid command please try again..");
+			verifyPayment(cardNum, ccv, expDate);
 		}
 		return 1;
 
