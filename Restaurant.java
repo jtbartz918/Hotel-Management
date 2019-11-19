@@ -1,4 +1,5 @@
 
+
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
@@ -417,3 +418,4 @@ public class Restaurant {
 		tables[table].openTable();
 	}
 }
+
