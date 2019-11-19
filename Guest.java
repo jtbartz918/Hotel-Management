@@ -18,7 +18,7 @@ public class Guest extends HotelMain {
 
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 	final private static String user = "root";
-	final private static String pw = "Isigna918*";
+	final private static String pw = "******";
 
 	public static String HotelUser = "";
 
@@ -34,7 +34,7 @@ public class Guest extends HotelMain {
 
 	}
 
-	public static void guestBookRoom(String uname) throws SQLException {
+	public static void guestBookRoom(String uname) throws SQLException, ClassNotFoundException {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Please enter the room you would like to book");
 		int roomnum = scanner.nextInt();
@@ -55,6 +55,8 @@ public class Guest extends HotelMain {
 		preparedStmt.setInt(1, nights);
 		preparedStmt.setInt(2, roomnum);
 		preparedStmt.execute();
+		System.out.println("Your room " + roomnum+" has been booked for "+nights);
+		HotelMain.welcomeScreen();
 
 	}
 
@@ -85,7 +87,7 @@ public class Guest extends HotelMain {
 		//welcomeScreen();
 	}
 
-	private static void guestHomePage() throws SQLException {
+	private static void guestHomePage() throws SQLException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Press 1 to book a room, press 2 to view your rewards");
@@ -180,6 +182,30 @@ public class Guest extends HotelMain {
 
 
 
+
+	}
+
+	public static void addPoints(int roomnum, String g) throws SQLException {
+		// TODO Auto-generated method stub
+		int nights=0;
+		int points=0;
+		connect = DriverManager.getConnection(host, user, pw);
+		Statement stmt3 = connect.createStatement();
+
+		rs = stmt3.executeQuery("SELECT nights FROM hotel WHERE roomNum = " + roomnum + "");
+		while (rs.next()) {
+			nights = rs.getInt(1);
+		}
+		rs = stmt3.executeQuery("SELECT points FROM Guest WHERE uname = '" + g + "'");
+		while (rs.next()) {
+			points = points+ rs.getInt(1);
+		}
+		points = points + (nights*10);
+
+		System.out.println("you have "+points+" points");
+		String query = "UPDATE Guest SET points = '"+points+"' WHERE uname = '"+g+"'";
+		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+		preparedStmt.execute();
 
 	}
 }
