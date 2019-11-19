@@ -168,6 +168,7 @@ public class Employee extends HotelMain {
 	}
 
 	public static void scheduleEmployee() throws ClassNotFoundException, SQLException {
+		int hours = 0;
 		System.out.println("Schedule: ");
 		printSchedule();
 		System.out.println("Who would you like to schedule: ");
@@ -181,13 +182,27 @@ public class Employee extends HotelMain {
 		String time = scan.next();
 		connect = DriverManager.getConnection(host, user, pw);
 		Statement stmt3 = connect.createStatement();
+		String query = "UPDATE schedule SET who = '" + input + "' WHERE day = '" + day + "' AND time = '" + time + "'";
+		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+		preparedStmt.execute();
 		rs = stmt3.executeQuery("SELECT day, time FROM schedule WHERE who = '" + input + "'");
 		while (rs.next()) {
 			day = rs.getString(1);
 			time = rs.getString(2);
-			System.out.println(input+ " is schduled: " + day + time);
-			
+			System.out.println(input + " is schduled: " + day + " " + time);
 		}
+		connect = DriverManager.getConnection(host, user, pw);
+		PreparedStatement s = (PreparedStatement) connect
+				.prepareStatement("SELECT hours FROM schedule WHERE who = '" + input + "'");
+		rs = s.executeQuery();
+
+		int tot = 0;
+		while (rs.next()) {
+			int pr = rs.getInt(1);
+			tot = tot + pr;
+		}
+		System.out.println(input + " is scheduled " + tot + " hours this week.");
+
 	}
 
 	public static void cleanStatus() throws SQLException {
@@ -272,7 +287,7 @@ public class Employee extends HotelMain {
 				System.out.println("What would you like to change their pay too: ");
 				Scanner scann = new Scanner(System.in);
 				int newPay = scann.nextInt();
-				String query = "UPDATE employee SET pay = "+ newPay +" WHERE name = '" + input + "'";
+				String query = "UPDATE employee SET pay = " + newPay + " WHERE name = '" + input + "'";
 				java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
 				preparedStmt.execute();
 			} else {
