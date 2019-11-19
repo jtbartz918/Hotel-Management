@@ -1,5 +1,4 @@
 
-package hm;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,8 +20,11 @@ public class HotelMain {
 
 
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
+
 	final private static String user = "root";
+
 	final private static String pw = "12345678";
+
 
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
@@ -77,6 +79,7 @@ public class HotelMain {
 		}
 		scanner.close();
 	}
+
 
 
 }
