@@ -27,7 +27,7 @@ public class SupplyManagement {
 		System.out.println("\n1. View Supplies");
 		System.out.println("2. Orders");
 		System.out.println("3. Update Stock");
-		System.out.println("4. Updated Item Information");
+		System.out.println("4. Update Item Information");
 		System.out.println("5. Add a New Item to the System");
 		System.out.println("6. Remove an Item from the System");
 		System.out.println("7. Exit Supply Management");
@@ -52,7 +52,7 @@ public class SupplyManagement {
 			printSupplyScreen();
 			choice = scanner.nextInt();
 			if(choice == 1) {
-				viewSuppliesWithStock();
+				handleInventoryView();
 			} else if (choice == 2) {
 				handleOrders();
 			} else if (choice == 3) {
@@ -139,8 +139,107 @@ public class SupplyManagement {
 		otherSupplies[2] = new Item("Bar Soap", "Other", "Comes in packs of 20", 3.95, 10);
 		otherSupplies[3] = new Item("Employee Uniforms", "Other", "Valet uniforms are the only one in stock right now", 49.95, 2);
 		o = 4;
+		//Init orders
+		orders[0] = new Order("Steak: 5\nBathTowel: 3\n", 12.4, orderNumber);
+		numO++;
+		orderNumber++;
 		//Set suppliesInit
 		suppliesInit = true;
+	}
+	
+	public static void handleInventoryView() {
+		int choice = -1;
+		Scanner scanner = new Scanner(System.in);
+		while(choice != 0) {
+			viewSuppliesWithStock();
+			System.out.println("Enter the item number you would like to view or 0 to return to the Supplies Menu");
+			choice = scanner.nextInt();
+			if(choice == 0) {
+				return;
+			}
+			//Get the item that will be updated.
+			choice--;
+			int index = -1;
+			Item item = null;
+			MenuItem mItem = null;
+			if(choice < ec) {
+				index = choice;
+				mItem = entreeChoices[index];
+			} else {
+				choice -= ec;
+			}
+			if(choice < sc && index == -1) {
+				index = choice;
+				mItem = sideChoices[index];
+			} else {
+				choice -= sc;
+			}
+			if(choice < dc && index == -1) {
+				index = choice;
+				mItem = dessertChoices[index];
+			} else {
+				choice -= dc;
+			}
+			if(choice < nc && index == -1) {
+				index = choice;
+				mItem = nonAlcoholicChoices[index];
+			} else {
+				choice -= nc;
+			}
+			if(choice < ac && index == -1) {
+				index = choice;
+				mItem = alcoholicChoices[index];
+			} else {
+				choice -= ac;
+			}
+			if(choice < c && index == -1) {
+				index = choice;
+				item = cleaningSupplies[index];
+			} else {
+				choice -= c;
+			}
+			if(choice < f && index == -1) {
+				index = choice;
+				item = frontDeskSupplies[index];
+			} else {
+				choice -= f;
+			}
+			if(choice < o && index == -1) {
+				index = choice;
+				item = otherSupplies[index];
+			} 
+			if (index == -1) {
+				System.out.println("Item not found");
+			}
+			if(mItem != null) {
+				System.out.println("\nName: " + mItem.name);
+				System.out.println("FoodType: " + mItem.foodType);
+				if(mItem.foodType.equals("Entree") || mItem.foodType.equals("Side")) {
+					String veg = "";
+					if(mItem.vegetarianOption) {
+						veg = "yes";
+					} else {
+						veg = "no";
+					}
+					System.out.println("Vegetarian Option: " + veg);
+				}
+				System.out.println("Sold for: $" + df.format(mItem.price));
+				System.out.println("Price Per Unit: $" + df.format(mItem.costPerUnit));
+				System.out.println("Currently in Stock: " + mItem.quantity);
+			} else {
+				System.out.println("\nName: " + item.name);
+				System.out.println("Supply Type: " + item.type);
+				System.out.println("Info/Description: " + item.info);
+				System.out.println("Price Per Unit: $" + item.price);
+				System.out.println("Currently in Stock: " + item.quantity);
+			}
+			System.out.println("\nWould you like to view another item?");
+			System.out.println("Enter 1 for yes and 0 to return to the Supply Menu");
+			choice = scanner.nextInt();
+			if(choice != 1) {
+				return;
+			}
+		}
 	}
 	
 	public static void viewSuppliesWithStock() {
@@ -306,11 +405,9 @@ public class SupplyManagement {
 				if(mItem != null) {
 					total += mItem.costPerUnit * quantity;
 					items += mItem.name + ": " + quantity + "\n";
-					mItem.quantity += quantity;
 				} else {
 					total += item.price * quantity;
 					items += item.name + ": " + quantity + "\n";
-					item.quantity += quantity;
 				}
 			} else {
 				System.out.println(name + " was not added to the order");
@@ -334,7 +431,7 @@ public class SupplyManagement {
 		orders[numO] = order;
 		numO++;
 		if(choice == 1) {
-			order.completeOrder();
+			billOrder(order);
 			System.out.println("Order complete! The Hotel was billed for $" + df.format(order.total) + ". The Hotel has currently been billed for $" + df.format(totalHotelBilled) + " for supply purchases.");
 		} else {
 			System.out.println("The order is complete but has not been billed. You can finalize and order from the 'Finalize an Order' menu option.");
@@ -347,7 +444,7 @@ public class SupplyManagement {
 		boolean needFinalized = false;
 		for(int i = 0; i < numO; i++) {
 			if(!orders[i].billed) {
-				System.out.println(i + ". Order " + orders[i].orderNumber + " has not been billed and has a total of " + orders[i].total + ".");
+				System.out.println((i+1) + ". Order " + orders[i].orderNumber + " has not been billed and has a total of $" + orders[i].total + ".");
 				needFinalized = true;
 			}
 		}
@@ -357,14 +454,14 @@ public class SupplyManagement {
 		}
 		System.out.println("Enter the line number of the order you want to finalize:");
 		int choice = scanner.nextInt();
+		choice--;
 		int index = choice;
 		System.out.println("Order #" + o[choice].orderNumber + " will be finalized for $" + df.format(o[choice].total) + ".");
 		System.out.println("Do you want to finalize this order?");
 		System.out.println("Enter 1 for yes and 0 for no");
 		choice = scanner.nextInt();
 		if(choice == 1) {
-			o[index].completeOrder();
-			totalHotelBilled += o[index].total;
+			billOrder(o[index]);
 			System.out.println("The Hotel was billed for $" + df.format(o[index].total) + ". The Hotel has currently spent $" + df.format(totalHotelBilled) + " on supplies."); 
 			System.out.println("Do you want to finalize another order?");
 		} else {
@@ -374,6 +471,62 @@ public class SupplyManagement {
 		System.out.println("Enter 1 for yes and 0 for no:");
 		if(choice == 1) {
 			finalizeOrder();
+		}
+	}
+	
+	public static void billOrder(Order order) {
+		order.completeOrder();
+		updateStock(order.lineItems);
+		totalHotelBilled += order.total;
+	}
+	
+	public static void updateStock(String itemList) {
+		String[] items = itemList.split("\n");
+		for(int i = 0; i < items.length; i++) {
+			String item = items[i];
+			String name = item.substring(0, item.indexOf(':'));
+			int q = Integer.parseInt(item.substring(item.indexOf(':') + 2));	
+			//Find and update item
+			for(int j = 0; j < ec; j++) {
+				if(entreeChoices[j].name.equals(name)) {
+					entreeChoices[j].quantity += q;
+				}
+			}
+			for(int j = 0; j < sc; j++) {
+				if(sideChoices[j].name.equals(name)) {
+					sideChoices[j].quantity += q;
+				}
+			}
+			for(int j = 0; j < dc; j++) {
+				if(dessertChoices[j].name.equals(name)) {
+					dessertChoices[j].quantity += q;
+				}
+			}
+			for(int j = 0; j < nc; j++) {
+				if(nonAlcoholicChoices[j].name.equals(name)) {
+					nonAlcoholicChoices[j].quantity += q;
+				}
+			}
+			for(int j = 0; j < ac; j++) {
+				if(alcoholicChoices[j].name.equals("name")) {
+					alcoholicChoices[j].quantity += q;
+				}
+			}
+			for(int j = 0; j < c; j++) {
+				if(otherSupplies[j].name.equals(name)) {
+					otherSupplies[j].quantity += q;
+				}
+			}
+			for(int j = 0; j < f; j++) {
+				if(frontDeskSupplies[j].name.equals(name)) {
+					frontDeskSupplies[j].quantity += q;
+				}
+			}
+			for(int j = 0; j < o; j++) {
+				if(otherSupplies[j].name.equals(name)) {
+					otherSupplies[j].quantity += q;
+				}
+			}
 		}
 	}
 	
