@@ -1,5 +1,4 @@
 
-
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
@@ -11,61 +10,31 @@ public class Restaurant {
 	private static MenuItem[] menuNADrinks = new MenuItem[5];
 	private static MenuItem[] menuDrinks = new MenuItem[5];
 	
+	private static MenuItem[] entreeChoices;
+	private static MenuItem[] sideChoices;
+	private static MenuItem[] dessertChoices;
+	private static MenuItem[] nonAlcoholicChoices;
+	private static MenuItem[] alcoholicChoices;
+	
 	//Number of choices for the day.
 	private static int e, s, d, n, a;
 
 	private static Table[] tables = {new Table(2, 1), new Table(2, 2), new Table(4, 3), new Table(4, 4), new Table(4, 5), new Table(6, 6), new Table(8, 7)}; 
 	private static double[] bills = new double[7];
 	private static String[] orders = new String[7];
-	
-	private static MenuItem[] entreeChoices = {
-		new MenuItem("Steak", "Entree", false, 15.95, 20),
-		new MenuItem("Carbonara", "Entree", false, 12.95, 20),
-		new MenuItem("Caesar Salad", "Entree", true, 9.95, 20),
-		new MenuItem("Cheese Pizza", "Entree", true, 15.95, 20),
-		new MenuItem("Shoulder Roast", "Entree", false, 15.95, 20)
-	};
-	
-	private static MenuItem[] sideChoices = {
-			new MenuItem("Mac & Cheese", "Side", true, 5.95, 20),
-			new MenuItem("Baked Potato", "Side", true, 3.95, 20),
-			new MenuItem("Fries", "Side", true, 4.95, 20),
-			new MenuItem("Small Side Salad", "Side", true, 3.95, 20),
-			new MenuItem("Coleslaw", "Side", true, 1.95, 20)
-		};
-	
-	private static MenuItem[] dessertChoices = {
-			new MenuItem("Chocolate Cake", "Dessert", true, 5.95, 20),
-			new MenuItem("Oreo Cheesecake", "Dessert", true, 5.95, 20),
-			new MenuItem("Carrot Cake", "Dessert", true, 5.95, 20),
-			new MenuItem("Brownie a la Mode", "Dessert", true, 5.95, 20),
-			new MenuItem("Chocolate Explosion", "Dessert", true, 5.95, 20)
-		};
-	
-	private static MenuItem[] nonAlcoholicChoices = {
-			new MenuItem("Soda", "NonAlcoholicDrink", true, 1.95, 20),
-			new MenuItem("Sweet Tea", "NonAlcoholicDrink", true, 1.95, 20),
-			new MenuItem("Unsweetened Tea", "NonAlcoholicDrink", true, 1.95, 20),
-			new MenuItem("Coffee", "NonAlcoholicDrink", true, 1.95, 20),
-			new MenuItem("Water", "NonAlcoholicDrink", true, 0.00, 20)
-		};
-	
-	private static MenuItem[] alcoholicChoices = {
-			new MenuItem("Old Fashon", "Entree", true, 8.95, 20),
-			new MenuItem("Exile Ruthie", "Entree", true, 5.95, 20),
-			new MenuItem("Bud Light", "Entree", true, 2.95, 20),
-			new MenuItem("House Cocktail", "Entree", true, 7.95, 20),
-			new MenuItem("Martini", "Entree", true, 7.95, 20)
-		};
-	
+		
 	static DecimalFormat df = new DecimalFormat("#.00"); 
-	
-	public static void main(String[] args) {
-		runRestaurant();
-	}
 	
 	public void openRestaurant() {
 		open = true;
+		if(!SupplyManagement.suppliesInit) {
+			SupplyManagement.initSupplies();
+		}
+		entreeChoices = SupplyManagement.getEntrees();
+		sideChoices = SupplyManagement.getSides();
+		dessertChoices = SupplyManagement.getDesserts();
+		nonAlcoholicChoices = SupplyManagement.getNADrinks();
+		alcoholicChoices = SupplyManagement.getDrinks();
 	}
 	
 	public static void runRestaurant() {
@@ -321,6 +290,7 @@ public class Restaurant {
 			if(choice != 0) {
 				orders[table] += menuEntrees[choice-1].name + "\n";
 				total += menuEntrees[choice-1].price;
+				menuEntrees[choice-1].quantity--;
 			} 
 			
 			printChoices("Sides");
@@ -329,6 +299,7 @@ public class Restaurant {
 			if(choice != 0) {
 				orders[table] += menuSides[choice-1].name + "\n";
 				total += menuSides[choice-1].price;
+				menuSides[choice-1].quantity--;
 			} 
 			
 			printChoices("Desserts");
@@ -337,6 +308,7 @@ public class Restaurant {
 			if(choice != 0) {
 				orders[table] += menuDesserts[choice-1].name + "\n";
 				total += menuDesserts[choice-1].price;
+				menuDesserts[choice-1].quantity--;
 			} 
 			
 			printChoices("Drinks");
@@ -345,6 +317,7 @@ public class Restaurant {
 			if(choice != 0) {
 				orders[table] += menuNADrinks[choice-1].name + "\n";
 				total += menuNADrinks[choice-1].price;
+				menuNADrinks[choice-1].quantity--;
 			} 
 			
 			printChoices("AlcoholicDrinks");
@@ -353,6 +326,7 @@ public class Restaurant {
 			if(choice != 0) {
 				orders[table] += menuDrinks[choice-1].name + "\n";
 				total += menuDrinks[choice-1].price;
+				menuDrinks[choice-1].quantity--;
 			} 
 		}
 		System.out.println("Enter any notes for this order:");
@@ -418,4 +392,3 @@ public class Restaurant {
 		tables[table].openTable();
 	}
 }
-
