@@ -23,10 +23,6 @@ public class SupplyManagement {
 	//Current number of items in the system
 	private static int ec, sc, dc, nc, ac, c, f, o;
 	
-	public static void main(String[] args) {
-		handleSupplyPage();
-	}
-	
 	public static void printSupplyScreen() {
 		System.out.println("\n1. View Supplies");
 		System.out.println("2. Orders");
