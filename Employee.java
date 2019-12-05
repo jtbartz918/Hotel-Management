@@ -1,6 +1,3 @@
-
-package hm;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -18,11 +15,22 @@ public class Employee extends HotelMain {
 	private static Statement statement = null;
 	private PreparedStatement preparedStatement = null;
 	private static ResultSet rs = null;
+	private static ResultSet rs2 = null;
 
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 	final private static String user = "root";
 
 	final private static String pw = "12345678";
+	
+	static ArrayList<String> marketP = new ArrayList<String>();
+	static ArrayList<String> hrP = new ArrayList<String>();
+	static ArrayList<String> managerP = new ArrayList<String>();
+	static ArrayList<String> fdP = new ArrayList<String>();
+	static ArrayList<String> securityP = new ArrayList<String>();
+	static ArrayList<String> chefP = new ArrayList<String>();
+	static ArrayList<String> lgP = new ArrayList<String>();
+	static ArrayList<String> valetP = new ArrayList<String>();
+	static ArrayList<String> serverP = new ArrayList<String>();
 
 
 	public static void employeeTypeScreen() throws ClassNotFoundException, SQLException {
@@ -48,11 +56,12 @@ public class Employee extends HotelMain {
 		} else if (choice == 4) {
 			employeeMainScreen();
 		} else if (choice == 5) {
-			employeeMainScreen();
+			Restaurant.runRestaurant();
 		} else {
 			System.out.println("Input is not a user type.");
 		}
 	}
+	
 
 	public static void employeeMainScreen() throws ClassNotFoundException, SQLException {
 		System.out.println("Menu:");
@@ -60,7 +69,6 @@ public class Employee extends HotelMain {
 		System.out.println("1. See status of each room");
 		System.out.println("2. Something");
 		System.out.println("3. Process payment");
-
 		System.out.println("4. Checkin");
 		System.out.println("5. Checkout");
 		System.out.println("6. Check cleanliness status of room");
@@ -113,11 +121,22 @@ public class Employee extends HotelMain {
 		statement = connect.createStatement();
 		// java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO
 		// hotel(vac) where roomNum = ?");
-		String query = "UPDATE hotel SET vac = 1, clean = 1, nights = ?, guest='" + uname + "' WHERE roomNum = ?";
-		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
-		preparedStmt.setInt(1, nights);
-		preparedStmt.setInt(2, roomnum);
-		preparedStmt.execute();
+		Statement stmt = connect.createStatement();
+		String query2 = "SELECT COUNT(*) FROM Guest WHERE uname = '" + uname + "'";
+		rs = stmt.executeQuery(query2);
+		while(rs.next()) {
+			if(rs.getInt(1)==1) {
+				String query = "UPDATE hotel SET vac = 1, clean = 1, nights = ?, guest='" + uname + "' WHERE roomNum = ?";
+				java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+				preparedStmt.setInt(1, nights);
+				preparedStmt.setInt(2, roomnum);
+				preparedStmt.execute();
+			}
+			else {
+				System.out.println("That guest username is not in the system, please check the database or ask the guest for thier username agian");
+			}
+		}
+		
 
 	}
 
@@ -145,11 +164,11 @@ public class Employee extends HotelMain {
 		int choice = scanner.nextInt();
 		if (choice == 1) {
 			// scanner.close();
-			System.out.println("You're hired!");
-			return;
+			hireEmp();
+			//return;
 		} else if (choice == 2) {
 			// scanner.close();
-			System.out.println("You're fired!");
+			fireEmp();
 			// return;
 		} else if (choice == 3) {
 			// scanner.close();
@@ -159,12 +178,249 @@ public class Employee extends HotelMain {
 			System.out.println("Input is not a user type.");
 		}
 	}
+	
+	public static void hireEmp() throws SQLException {
+		System.out.println("New Employee Hiring:");
+		System.out.println("Please enter first name: ");
+		Scanner scanner = new Scanner(System.in);
+		String fname = scanner.next();
+		System.out.println("Please enter last name: ");
+		Scanner scanner1 = new Scanner(System.in);
+		String lname = scanner1.next();
+		System.out.println("Please enter job title: ");
+		Scanner scanner2 = new Scanner(System.in);
+		String title = scanner2.nextLine();
+		System.out.println("Please enter agreed upon monetary compensation: ");
+		Scanner scanner3 = new Scanner(System.in);
+		int moneyPay = scanner3.nextInt();
+		System.out.println("How many benefits were agreed upon: ");
+		Scanner scanner6 = new Scanner(System.in);
+		int nonMon = scanner6.nextInt();
+		System.out.println("Please enter agreed upon benefits apart compensation: ");
+		Scanner scanner4 = new Scanner(System.in);
+		String benefit = scanner4.nextLine();
+		System.out.println("Please enter personal information (address, DOB, sex(M/F/other): ");
+		Scanner scanner5 = new Scanner(System.in);
+		String info = scanner5.nextLine();
+		connect = DriverManager.getConnection(host, user, pw);
+		String query = "INSERT INTO employee (name, lastN, title, pay, notMoney, personalInfo) VALUES ('"+ fname +"', '"+ lname +"', '"+ title +"', '"+ moneyPay +"', '"+ benefit +"', '"+ info +"')";
+		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+		preparedStmt.execute();
+		int value = 0;
+		connect = DriverManager.getConnection(host, user, pw);
+		Statement stmt3 = connect.createStatement();
+		rs = stmt3.executeQuery("SELECT pay FROM employee WHERE name = '"+fname+"' and lastN = '"+lname+"'" );
+		while(rs.next()) {
+			value = rs.getInt(1);
+		}
+		value += nonMon * 1000;
+		connect = DriverManager.getConnection(host, user, pw);
+		Statement stmt5 = connect.createStatement();
+		String query1 = "UPDATE employee SET value = '" + value + "' WHERE name = '" + fname + "' AND lastN = '" + lname + "'";
+		java.sql.PreparedStatement preparedStmt1 = connect.prepareStatement(query1);
+		preparedStmt1.execute();
+		System.out.println(value);
+		System.out.println("The current projects going on are: ");
+		System.out.println("Advertising/Commercials (Marketing) ");
+		System.out.println("Internship Candidate Reachouts (HR) ");
+		System.out.println("Staff Effciency Measurement (Manager) ");
+		System.out.println("Customer Satisfaction Survey (FrontDesk) ");
+		System.out.println("Guest Safety Training (Security) ");
+		System.out.println("Kitchen Appliance Inspections (Chef) ");
+		System.out.println("First Aid Certification (Lifeguard) ");
+		System.out.println("Appropriate Guest Vehicle Operation (Valet) ");
+		System.out.println("Setting Tables (Server) ");
+		System.out.println("Would you like to add them to a project? (yes/no)");
+		Scanner scanner7 = new Scanner(System.in);
+		String choice = scanner7.next();
+		if(choice.equals("yes")) {
+			addgroupProj(fname, lname);
+		}
+	}
+	
+	public static void fireEmp() throws SQLException {
+		System.out.println("New Employee Hiring:");
+		System.out.println("Which employee is being fired (please enter full name of employee): ");
+		Scanner scanner = new Scanner(System.in);
+		String fname = scanner.next();		
+		String lname = scanner.next();
+		connect = DriverManager.getConnection(host, user, pw);
+		Statement stmt3 = connect.createStatement();
+		rs = stmt3.executeQuery("SELECT COUNT(*) FROM employee WHERE name = '"+fname+"' and lastN = '"+lname+"'" );
+		while(rs.next()) {
+			if(rs.getInt(1)==1) {
+				connect = DriverManager.getConnection(host, user, pw);
+				String query = "DELETE FROM employee WHERE name = '"+ fname +"' AND lastN = '"+ lname +"'";
+				java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+				preparedStmt.execute();
+				removegroupProj(fname, lname);
+
+			}
+			else {
+				System.out.println("That employee is not hired here.");
+				System.out.println("Did you want to retype the name or enter a new name? (yes/no) ");
+				System.out.println(" ");
+				Scanner scan = new Scanner(System.in);
+				String ans = scan.next();
+				if(ans.equals("yes")) {
+					fireEmp();
+				}
+			}
+
+		}
+		
+	}
+	
+	public static void addgroupProj(String fname, String lname) throws SQLException {
+		connect = DriverManager.getConnection(host, user, pw);
+		Statement stmt3 = connect.createStatement();
+		rs = stmt3.executeQuery("SELECT title FROM employee WHERE name = '"+fname+"' and lastN = '"+lname+"'" );
+		while(rs.next()) {
+			if(rs.getString(1).equals("Marketing")) {
+				marketP.add(fname + " " + lname);
+				for(int i = 0; i < marketP.size(); i++) {   
+				    System.out.println(marketP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("HR")) {
+				hrP.add(rs.getString(1));
+				hrP.add(fname + " " + lname);
+				for(int i = 0; i < hrP.size(); i++) {   
+				    System.out.println(hrP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Manager")) {
+				managerP.add(rs.getString(1));
+				managerP.add(fname + " " + lname);
+				for(int i = 0; i < managerP.size(); i++) {   
+				    System.out.println(managerP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("FrontDesk")) {
+				fdP.add(rs.getString(1));
+				fdP.add(fname + " " + lname);
+				for(int i = 0; i < fdP.size(); i++) {   
+				    System.out.println(fdP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Security")) {
+				securityP.add(rs.getString(1));
+				securityP.add(fname + " " + lname);
+				for(int i = 0; i < securityP.size(); i++) {   
+				    System.out.println(securityP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Chef")) {
+				chefP.add(rs.getString(1));
+				chefP.add(fname + " " + lname);
+				for(int i = 0; i < chefP.size(); i++) {   
+				    System.out.println(chefP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Lifeguard")) {
+				lgP.add(rs.getString(1));
+				lgP.add(fname + " " + lname);
+				for(int i = 0; i < lgP.size(); i++) {   
+				    System.out.println(lgP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Valet")) {
+				valetP.add(rs.getString(1));
+				valetP.add(fname + " " + lname);
+				for(int i = 0; i < valetP.size(); i++) {   
+				    System.out.println(valetP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Server")) {
+				serverP.add(rs.getString(1));
+				serverP.add(fname + " " + lname);
+				for(int i = 0; i < serverP.size(); i++) {   
+				    System.out.println(serverP.get(i));
+				} 
+			}
+			else {
+				break;
+			}
+		}
+	}
+	
+	public static void removegroupProj(String fname, String lname) throws SQLException {
+		connect = DriverManager.getConnection(host, user, pw);
+		Statement stmt3 = connect.createStatement();
+		rs = stmt3.executeQuery("SELECT title FROM employee WHERE name = '"+fname+"' and lastN = '"+lname+"'" );
+		while(rs.next()) {
+			if(rs.getString(1).equals("Marketing")) {
+		       marketP.remove(fname + " " + lname);
+		       for(int i = 0; i < marketP.size(); i++) {   
+				    System.out.println(marketP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("HR")) {
+				hrP.add(rs.getString(1));
+				hrP.add(fname + " " + lname);
+				for(int i = 0; i < hrP.size(); i++) {   
+				    System.out.println(hrP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Manager")) {
+				managerP.add(rs.getString(1));
+				managerP.add(fname + " " + lname);
+				for(int i = 0; i < managerP.size(); i++) {   
+				    System.out.println(managerP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("FrontDesk")) {
+				fdP.add(rs.getString(1));
+				fdP.add(fname + " " + lname);
+				for(int i = 0; i < fdP.size(); i++) {   
+				    System.out.println(fdP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Security")) {
+				securityP.add(rs.getString(1));
+				securityP.add(fname + " " + lname);
+				for(int i = 0; i < securityP.size(); i++) {   
+				    System.out.println(securityP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Chef")) {
+				chefP.add(rs.getString(1));
+				chefP.add(fname + " " + lname);
+				for(int i = 0; i < chefP.size(); i++) {   
+				    System.out.println(chefP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Lifeguard")) {
+				lgP.add(rs.getString(1));
+				lgP.add(fname + " " + lname);
+				for(int i = 0; i < lgP.size(); i++) {   
+				    System.out.println(lgP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Valet")) {
+				valetP.add(rs.getString(1));
+				valetP.add(fname + " " + lname);
+				for(int i = 0; i < valetP.size(); i++) {   
+				    System.out.println(valetP.get(i));
+				} 
+			}
+			else if(rs.getString(1).equals("Server")) {
+				serverP.add(rs.getString(1));
+				serverP.add(fname + " " + lname);
+				for(int i = 0; i < serverP.size(); i++) {   
+				    System.out.println(serverP.get(i));
+				} 
+			}
+			else {
+				break;
+			}
+		}
+	}
 
 
 	public static void checkOut() throws SQLException, ClassNotFoundException {
-
+		int deduction=0;
 		Scanner scanner = new Scanner(System.in);
-
 		System.out.println("Please enter the room you would like to checkout from?");
 		int roomnum = scanner.nextInt();
 		if (roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
@@ -197,7 +453,17 @@ public class Employee extends HotelMain {
 		}
 		System.out.println("");
 		System.out.println("Thank you for staying with us. Your total is $" + getTotalPrice(roomnum));
-		System.out.println("");
+		//System.out.println("Would you like to use any points?");
+		//System.out.println("Enter 1 for yes or 2 for no");
+		//Scanner sc1 = new Scanner(System.in);
+		//int choice = sc1.nextInt();
+//		if(choice == 1) {
+//			int newTotal=0;
+//			newTotal = getTotalPrice(roomnum)-deductPoints(roomnum);
+//			System.out.println("After using your points your total is "+ newTotal);
+//			//deduction=deductPoints(roomnum);
+//		}
+		
 		System.out.println("Please enter your credit card information...");
 		System.out.println("Card number:");
 		Scanner sc = new Scanner(System.in);
@@ -225,6 +491,30 @@ public class Employee extends HotelMain {
 			System.out.println("payment info was not verified, please try again.");
 			checkOut();
 		}
+		}
+	
+
+	private static int deductPoints(int roomnum) throws SQLException {
+		// TODO Auto-generated method stub
+		String guest = null;
+		//System.out.println("in deduct points");
+		connect = DriverManager.getConnection(host, user, pw);
+		Statement stmt = connect.createStatement();
+		
+		rs2 = stmt.executeQuery("SELECT guest FROM hotel WHERE roomNum = "+roomnum);
+		while(rs.next()) {
+			guest = rs.getString(guest);
+		}
+		rs = stmt.executeQuery("SELECT points FROM Guest WHERE uname = '" + guest + "'");
+		int points=0;
+		while(rs.next()) {
+			points = rs.getInt(1);
+			//return getTotalPrice(roomnum)-points;
+			return points;
+		}
+		return 0;
+		
+		
 	}
 
 	private static int verifyPayment(String cardNum, int ccv, String expDate) {
@@ -254,11 +544,10 @@ public class Employee extends HotelMain {
 		}
 		connect = DriverManager.getConnection(host, user, pw);
 		PreparedStatement s = (PreparedStatement) connect
-				.prepareStatement("SELECT nights FROM hotel WHERE roomNum = ?");
-		s.setInt(1, roomnum);
+				.prepareStatement("SELECT nights, bill FROM hotel WHERE roomNum = '"+roomnum+"'");
 		rs = s.executeQuery();
 		while (rs.next()) {
-			int pr2 = rs.getInt(1) * 300;
+			int pr2 = (rs.getInt("nights") * 300) + rs.getInt("bill");
 			return pr2;
 			// System.out.println("$" + pr);
 		}
@@ -296,11 +585,19 @@ public class Employee extends HotelMain {
 	}
 
 	public static void scheduleEmployee() throws ClassNotFoundException, SQLException {
-
+		System.out.println("Menu:");
+		Scanner scr = new Scanner(System.in);
+		System.out.println("1. View Schedule");
+		System.out.println("2. Update schedule");
+		int choice = scr.nextInt();
+		if (choice == 1) {
+			// scanner.close();
+			Database.printSchedule();
+			return;
+		}else {
 		int hours = 0;
 		System.out.println("Schedule: ");
-		printSchedule();
-
+		Database.printSchedule();
 		System.out.println("Who would you like to schedule: ");
 		Scanner scanner = new Scanner(System.in);
 		String input = scanner.next();
@@ -312,7 +609,6 @@ public class Employee extends HotelMain {
 		String time = scan.next();
 		connect = DriverManager.getConnection(host, user, pw);
 		Statement stmt3 = connect.createStatement();
-
 		String query = "UPDATE schedule SET who = '" + input + "' WHERE day = '" + day + "' AND time = '" + time + "'";
 		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
 		preparedStmt.execute();
@@ -336,7 +632,7 @@ public class Employee extends HotelMain {
 		}
 		System.out.println(input + " is scheduled " + tot + " hours this week.");
 
-
+		}
 	}
 
 	public static void cleanStatus() throws SQLException {
@@ -438,7 +734,7 @@ public class Employee extends HotelMain {
 		} else if (choice == 3) {
 			// scanner.close();
 
-			printSchedule();
+			Database.printSchedule();
 
 			// return;
 		} else if (choice == 4) {
