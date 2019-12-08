@@ -1,6 +1,3 @@
-
-package hm;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -19,17 +16,14 @@ public class HotelMain {
 	private PreparedStatement preparedStatement = null;
 	private static ResultSet rs = null;
 
-
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 	final private static String user = "root";
 	final private static String pw = "12345678";
-
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		welcomeScreen();
 
 	}
-
 
 	public static void printDB() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
@@ -43,13 +37,12 @@ public class HotelMain {
 
 	}
 
-
 	public static void welcomeScreen() throws ClassNotFoundException, SQLException {
 		loginScreen();
 		if (userType == "guest") {
 			Guest.handleGuest();
 		} else if (userType == "employee") {
-			Employee.handleEmployee();;
+			Employee.handleEmployee();
 		}
 	}
 
@@ -78,6 +71,4 @@ public class HotelMain {
 		scanner.close();
 	}
 
-
 }
-
