@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import java.util.Scanner;
 import java.io.*;
 import com.mysql.jdbc.PreparedStatement;
 
@@ -35,38 +34,35 @@ public class Employee extends HotelMain {
 	static ArrayList<String> valetP = new ArrayList<String>();
 	static ArrayList<String> serverP = new ArrayList<String>();
 
-	public static void getDesc(String description) {
-		desc.add(description);
-	}
+//	public static void employeeTypeScreen() throws ClassNotFoundException, SQLException {
 
-	public static void employeeTypeScreen() throws ClassNotFoundException, SQLException {
-		System.out.println("Menu:");
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("1. Manager");
-		System.out.println("2. HR");
-		System.out.println("3. Front Desk");
-		System.out.println("4. Security");
-		System.out.println("5. Restaurant");
-		int choice = scanner.nextInt();
-		if (choice == 1) {
-			// scanner.close();
-			managerMainScreen();
-			return;
-		} else if (choice == 2) {
-			// scanner.close();
-			hrMainScreen();
-			// return;
-		} else if (choice == 3) {
-			employeeMainScreen();
-			// return;
-		} else if (choice == 4) {
-			employeeMainScreen();
-		} else if (choice == 5) {
-			Restaurant.runRestaurant();
-		} else {
-			System.out.println("Input is not a user type.");
-		}
-	}
+	// System.out.println("Menu:");
+//		Scanner scanner = new Scanner(System.in);
+//		System.out.println("1. Manager");
+//		System.out.println("2. HR");
+//		System.out.println("3. Front Desk");
+//		System.out.println("4. Security");
+//		System.out.println("5. Restaurant");
+//		int choice = scanner.nextInt();
+//		if (choice == 1) {
+//			// scanner.close();
+//			managerMainScreen();
+//			return;
+//		} else if (choice == 2) {
+//			// scanner.close();
+//			hrMainScreen();
+//			// return;
+//		} else if (choice == 3) {
+//			employeeMainScreen();
+//			// return;
+//		} else if (choice == 4) {
+//			employeeMainScreen();
+//		} else if (choice == 5) {
+//			Restaurant.runRestaurant();
+//		} else {
+//			System.out.println("Input is not a user type.");
+//		}
+//	}
 
 	public static void employeeMainScreen() throws ClassNotFoundException, SQLException {
 		description = ". Front Desk";
@@ -160,32 +156,32 @@ public class Employee extends HotelMain {
 		}
 	}
 
-	public static void hrMainScreen() throws ClassNotFoundException, SQLException {
-		description = ". HR";
-		System.out.println("Menu:");
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("1. Hire an Employee");
-		System.out.println("2. Fire an Employee");
-		System.out.println("3. Schedule an Employee");
-		int choice = scanner.nextInt();
-		if (choice == 1) {
-			// scanner.close();
-			hireEmp();
-			// return;
-		} else if (choice == 2) {
-			// scanner.close();
-			fireEmp();
-			// return;
-		} else if (choice == 3) {
-			// scanner.close();
-			scheduleEmployee();
-			// return;
-		} else {
-			System.out.println("Input is not a user type.");
-		}
-	}
+//	public static void hrMainScreen() throws ClassNotFoundException, SQLException {
+//		description = ". HR";
+//		System.out.println("Menu:");
+//		Scanner scanner = new Scanner(System.in);
+//		System.out.println("1. Hire an Employee");
+//		System.out.println("2. Fire an Employee");
+//		System.out.println("3. Schedule an Employee");
+//		int choice = scanner.nextInt();
+//		if (choice == 1) {
+//			// scanner.close();
+//			hireEmp();
+//			// return;
+//		} else if (choice == 2) {
+//			// scanner.close();
+//			fireEmp();
+//			// return;
+//		} else if (choice == 3) {
+//			// scanner.close();
+//			scheduleEmployee();
+//			// return;
+//		} else {
+//			System.out.println("Input is not a user type.");
+//		}
+//	}
 
-	public static void hireEmp() throws SQLException {
+	public static void hireEmp() throws SQLException, ClassNotFoundException {
 		System.out.println("New Employee Hiring:");
 		System.out.println("Please enter first name: ");
 		Scanner scanner = new Scanner(System.in);
@@ -243,6 +239,8 @@ public class Employee extends HotelMain {
 		java.sql.PreparedStatement preparedStmt1 = connect.prepareStatement(query1);
 		preparedStmt1.execute();
 		System.out.println(fname + " " + lname + "'s total compensation is: $" + value);
+		System.out.println("");
+		System.out.println("");
 		System.out.println("The current projects going on are: ");
 		System.out.println("Advertising/Commercials (Marketing) ");
 		System.out.println("Internship Candidate Reachouts (HR) ");
@@ -253,15 +251,67 @@ public class Employee extends HotelMain {
 		System.out.println("First Aid Certification (Lifeguard) ");
 		System.out.println("Appropriate Guest Vehicle Operation (Valet) ");
 		System.out.println("Setting Tables (Server) ");
+		System.out.println("The current projects going on are: ");
+//		for(int i = 0; i < ) {
+//			
+//		}
 		System.out.println("Would you like to add them to a project? (yes/no)");
 		Scanner scanner7 = new Scanner(System.in);
 		String choice = scanner7.next();
 		if (choice.equals("yes")) {
-			addgroupProj(fname, lname);
+			System.out.println("Would you like to add them to an existing project? (yes/no)");
+			Scanner scanner8 = new Scanner(System.in);
+			String bool = scanner8.next();
+			if (bool.equals("yes")) {
+				addgroupProj(fname, lname);
+				System.out.println("Menu: ");
+				iFrontEnd demo = new displayMenu();
+				demo.displayCommands();
+				}
+			
+//			 else if(bool.equals("no")){
+//				createGroup();
+//				addgroupProj(fname, lname);
+//				System.out.println("Menu: ");
+//				iFrontEnd demo = new displayMenu();
+//				demo.displayCommands();
+//			}
 		}
-	}
+}
 
-	public static void fireEmp() throws SQLException {
+//	public static void createGroup() {
+//		ArrayList<String> list = new ArrayList<String>();
+//		// List<String> due = new ArrayList<>();
+//		//List<String> pos = new ArrayList<>();
+//		int c = 0;
+//		// List<String> groupN = new ArrayList<>();
+//		System.out.println("What would you like to call this group project? ");
+//		Scanner s = new Scanner(System.in);
+//		// groupN.add(s.nextLine());
+//		String groupN = s.nextLine();
+//		System.out.println("What is the due date for this project ");
+//		Scanner sc = new Scanner(System.in);
+//		// due.add(sc.nextLine());
+//		String due = sc.nextLine();
+////		System.out.println("What job title is this group for? ");
+////		Scanner sca = new Scanner(System.in);
+////		pos.add(sca.nextLine());
+//		ArrayList<ArrayList<String>> lists = new ArrayList<ArrayList<String>>();		
+//		list.add(groupN);
+//		list.add(due);
+//		lists.add(list);
+////		for (ArrayList<String> group:lists) {
+////				c++;
+////				System.out.println(group);
+////		}
+//		for (int i = 0; i < lists.size(); i++) { 
+//            for (int j = 0; j < lists.get(i).size(); j++) { 
+//                System.out.print(lists.get(i).get(j) + " "); 
+//            } 
+//		}
+//	}
+
+	public static void fireEmp() throws SQLException, ClassNotFoundException {
 		System.out.println("New Employee Hiring:");
 		System.out.println("Which employee is being fired (please enter full name of employee): ");
 		Scanner scanner = new Scanner(System.in);
@@ -273,11 +323,14 @@ public class Employee extends HotelMain {
 				.executeQuery("SELECT COUNT(*) FROM employee WHERE name = '" + fname + "' and lastN = '" + lname + "'");
 		while (rs.next()) {
 			if (rs.getInt(1) == 1) {
+				removegroupProj(fname, lname);
 				connect = DriverManager.getConnection(host, user, pw);
 				String query = "DELETE FROM employee WHERE name = '" + fname + "' AND lastN = '" + lname + "'";
 				java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
 				preparedStmt.execute();
-				removegroupProj(fname, lname);
+				System.out.println("Menu: ");
+				iFrontEnd demo = new displayMenu();
+				demo.displayCommands();
 
 			} else {
 				System.out.println("That employee is not hired here.");
@@ -301,46 +354,62 @@ public class Employee extends HotelMain {
 		while (rs.next()) {
 			if (rs.getString(1).equals("Marketing")) {
 				marketP.add(fname + " " + lname);
+				System.out.println("Current Members of this Group are: ");
 				for (int i = 0; i < marketP.size(); i++) {
 					System.out.println(marketP.get(i));
 				}
 			} else if (rs.getString(1).equals("HR")) {
 				hrP.add(fname + " " + lname);
+				System.out.println("Current Members of this Group are: ");
+
 				for (int i = 0; i < hrP.size(); i++) {
 					System.out.println(hrP.get(i));
 				}
 			} else if (rs.getString(1).equals("Manager")) {
 				managerP.add(fname + " " + lname);
+				System.out.println("Current Members of this Group are: ");
 				for (int i = 0; i < managerP.size(); i++) {
 					System.out.println(managerP.get(i));
 				}
 			} else if (rs.getString(1).equals("FrontDesk")) {
 				fdP.add(fname + " " + lname);
+				System.out.println("Current Members of this Group are: ");
+
 				for (int i = 0; i < fdP.size(); i++) {
 					System.out.println(fdP.get(i));
 				}
 			} else if (rs.getString(1).equals("Security")) {
 				securityP.add(fname + " " + lname);
+				System.out.println("Current Members of this Group are: ");
+
 				for (int i = 0; i < securityP.size(); i++) {
 					System.out.println(securityP.get(i));
 				}
 			} else if (rs.getString(1).equals("Chef")) {
 				chefP.add(fname + " " + lname);
+				System.out.println("Current Members of this Group are: ");
+
 				for (int i = 0; i < chefP.size(); i++) {
 					System.out.println(chefP.get(i));
 				}
 			} else if (rs.getString(1).equals("Lifeguard")) {
 				lgP.add(fname + " " + lname);
+				System.out.println("Current Members of this Group are: ");
+
 				for (int i = 0; i < lgP.size(); i++) {
 					System.out.println(lgP.get(i));
 				}
 			} else if (rs.getString(1).equals("Valet")) {
 				valetP.add(fname + " " + lname);
+				System.out.println("Current Members of this Group are: ");
+
 				for (int i = 0; i < valetP.size(); i++) {
 					System.out.println(valetP.get(i));
 				}
 			} else if (rs.getString(1).equals("Server")) {
 				serverP.add(fname + " " + lname);
+				System.out.println("Current Members of this Group are: ");
+
 				for (int i = 0; i < serverP.size(); i++) {
 					System.out.println(serverP.get(i));
 				}
@@ -357,48 +426,66 @@ public class Employee extends HotelMain {
 		while (rs.next()) {
 			if (rs.getString(1).equals("Marketing")) {
 				marketP.remove(fname + " " + lname);
+				System.out.println("Current Members of this Group are: ");
+
 				for (int i = 0; i < marketP.size(); i++) {
 					System.out.println(marketP.get(i));
 				}
 			} else if (rs.getString(1).equals("HR")) {
 				hrP.remove(fname + " " + lname);
-				for (int i = 0; i < marketP.size(); i++) {
-					System.out.println(marketP.get(i));
+				System.out.println("Current Members of this Group are: ");
+
+				for (int i = 0; i < hrP.size(); i++) {
+					System.out.println(hrP.get(i));
 				}
 			} else if (rs.getString(1).equals("Manager")) {
 				managerP.remove(fname + " " + lname);
-				for (int i = 0; i < marketP.size(); i++) {
-					System.out.println(marketP.get(i));
+				System.out.println("Current Members of this Group are: ");
+
+				for (int i = 0; i < managerP.size(); i++) {
+					System.out.println(managerP.get(i));
 				}
 			} else if (rs.getString(1).equals("FrontDesk")) {
 				fdP.remove(fname + " " + lname);
-				for (int i = 0; i < marketP.size(); i++) {
-					System.out.println(marketP.get(i));
+				System.out.println("Current Members of this Group are: ");
+
+				for (int i = 0; i < fdP.size(); i++) {
+					System.out.println(fdP.get(i));
 				}
 			} else if (rs.getString(1).equals("Security")) {
 				securityP.remove(fname + " " + lname);
-				for (int i = 0; i < marketP.size(); i++) {
-					System.out.println(marketP.get(i));
+				System.out.println("Current Members of this Group are: ");
+
+				for (int i = 0; i < securityP.size(); i++) {
+					System.out.println(securityP.get(i));
 				}
 			} else if (rs.getString(1).equals("Chef")) {
 				chefP.remove(fname + " " + lname);
-				for (int i = 0; i < marketP.size(); i++) {
-					System.out.println(marketP.get(i));
+				System.out.println("Current Members of this Group are: ");
+
+				for (int i = 0; i < chefP.size(); i++) {
+					System.out.println(chefP.get(i));
 				}
 			} else if (rs.getString(1).equals("Lifeguard")) {
 				lgP.remove(fname + " " + lname);
-				for (int i = 0; i < marketP.size(); i++) {
-					System.out.println(marketP.get(i));
+				System.out.println("Current Members of this Group are: ");
+				for (int i = 0; i < lgP.size(); i++) {
+					System.out.println(lgP.get(i));
 				}
 			} else if (rs.getString(1).equals("Valet")) {
 				valetP.remove(fname + " " + lname);
-				for (int i = 0; i < marketP.size(); i++) {
-					System.out.println(marketP.get(i));
+				System.out.println("Current Members of this Group are: ");
+
+				for (int i = 0; i < valetP.size(); i++) {
+					System.out.println(valetP.get(i));
 				}
 			} else if (rs.getString(1).equals("Server")) {
 				serverP.remove(fname + " " + lname);
-				for (int i = 0; i < marketP.size(); i++) {
-					System.out.println(marketP.get(i));
+				System.out.println("Current Members of this Group are: ");
+
+				for (int i = 0; i < serverP.size(); i++) {
+
+					System.out.println(serverP.get(i));
 				}
 			} else {
 				break;
@@ -649,10 +736,9 @@ public class Employee extends HotelMain {
 	}
 
 	public static void handleEmployee() throws ClassNotFoundException, SQLException {
-		employeeTypeScreen();
+		iFrontEnd demo = new displayMenu();
+		demo.displayCommands();
 		userType = "none";
-		welcomeScreen();
-
 	}
 
 	public static void cashOut() {
