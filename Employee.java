@@ -1,6 +1,6 @@
-
 package hm;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -21,9 +21,9 @@ public class Employee extends HotelMain {
 
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 	final private static String user = "root";
-	final private static String pw = "******";
+	final private static String pw = "Isigna918*";
 
-	public static void employeeTypeScreen() throws ClassNotFoundException, SQLException {
+	public static void employeeTypeScreen() throws ClassNotFoundException, SQLException, IOException {
 		System.out.println("Menu:");
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("1. Manager");
@@ -31,6 +31,7 @@ public class Employee extends HotelMain {
 		System.out.println("3. Front Desk");
 		System.out.println("4. Security");
 		System.out.println("5. Restaurant");
+		System.out.println("6. Display Image");
 		int choice = scanner.nextInt();
 		if (choice == 1) {
 			// scanner.close();
@@ -47,9 +48,87 @@ public class Employee extends HotelMain {
 			employeeMainScreen();
 		} else if (choice == 5) {
 			employeeMainScreen();
-		} else {
+		} else if (choice == 6){
+			imgMenu();
+		}
+		else
+		{
 			System.out.println("Input is not a user type.");
 		}
+	}
+
+	private static void imgMenu() throws SQLException, IOException, ClassNotFoundException {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Would you like to view or add an image?");
+		System.out.println("Press 1 to view, press 2 for add");
+		int c = sc.nextInt();
+		if(c==1) {
+			imgView();
+		}
+		else if(c == 2) {
+			imgAdd();
+		}
+		else {
+			System.out.println("Sorry you entered somehting incorrect, press 1 to try again or 2 to go back");
+			imgMenu();
+
+		}
+
+	}
+
+	private static void imgAdd() throws SQLException {
+		// TODO Auto-generated method stub
+		Scanner g = new Scanner(System.in);
+		System.out.println("Would you like to view a guest or an employee? Press 1 for guest 2 for employee");
+		Scanner ge = new Scanner(System.in);
+		int ge1 = ge.nextInt();
+		if(ge1==1) {
+		System.out.println("Enter in the username of the guest you would like to add the image of");
+		String s = g.nextLine();
+		String path = Image.addImg();
+		connect = DriverManager.getConnection(host, user, pw);
+		Statement statement = connect.createStatement();
+		statement.executeUpdate("UPDATE Guest SET imgPath = '"+path+"' WHERE uname = '"+s+"'");
+		}
+		if(ge1==2) {
+			try {
+			System.out.println("Enter in the username of the employee you would like to add the image of");
+			String s = g.nextLine();
+			String path = Image.addImg();
+			connect = DriverManager.getConnection(host, user, pw);
+			Statement statement = connect.createStatement();
+			statement.executeUpdate("UPDATE Guest SET imgPath = '"+path+"' WHERE uname = '"+s+"'");
+			}
+			catch(Exception e){
+				System.out.println("You entered the incorrect username please try again");
+				imgAdd();
+			}
+			}
+	}
+
+	private static void imgView() throws SQLException, IOException, ClassNotFoundException {
+		// TODO Auto-generated method stub
+		Scanner g = new Scanner(System.in);
+		System.out.println("Enter in the username of the guest you would like to view the image of");
+		String s = g.nextLine();
+		String path = "";
+		try {
+		connect = DriverManager.getConnection(host, user, pw);
+		Statement stmt = connect.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT imgPath FROM Guest WHERE uname = '"+s+"'");
+		while(rs.next()) {
+			path = rs.getString(1);
+		}
+		Image.show(path);
+		handleEmployee();
+		}
+		catch(Exception e) {
+			System.out.println("you entered an incorrect username, please try again");
+			imgView();
+		}
+
+
 	}
 
 	public static void employeeMainScreen() throws ClassNotFoundException, SQLException {
@@ -58,12 +137,10 @@ public class Employee extends HotelMain {
 		System.out.println("1. See status of each room");
 		System.out.println("2. Something");
 		System.out.println("3. Process payment");
-
 		System.out.println("4. Checkin");
 		System.out.println("5. Checkout");
 		System.out.println("6. Check cleanliness status of room");
 		// System.out.println("7. Get price");
-
 		int choice = scanner.nextInt();
 		if (choice == 1) {
 			// scanner.close();
@@ -77,13 +154,12 @@ public class Employee extends HotelMain {
 			cashOut();
 			// return;
 		} else if (choice == 4) {
-
 			checkIn();
 		} else if (choice == 5) {
 			checkOut();
 		} else if (choice == 6) {
 			cleanStatus();
-
+			;
 		} else {
 			System.out.println("Input is not a user type.");
 		}
@@ -132,7 +208,6 @@ public class Employee extends HotelMain {
 
 	}
 
-
 	public static void managerMainScreen() throws ClassNotFoundException, SQLException {
 		System.out.println("Menu:");
 		Scanner scanner = new Scanner(System.in);
@@ -171,9 +246,7 @@ public class Employee extends HotelMain {
 		}
 	}
 
-
 	public static void checkOut() throws SQLException, ClassNotFoundException {
-
 		Scanner scanner = new Scanner(System.in);
 
 		System.out.println("Please enter the room you would like to checkout from?");
@@ -185,7 +258,6 @@ public class Employee extends HotelMain {
 		}
 		connect = DriverManager.getConnection(host, user, pw);
 		statement = connect.createStatement();
-
 		// java.sql.PreparedStatement ps = connect.prepareStatement(" INTO
 		// hotel(vac) where roomNum = ?");
 		connect = DriverManager.getConnection(host, user, pw);
@@ -208,6 +280,7 @@ public class Employee extends HotelMain {
 		}
 		System.out.println("");
 		System.out.println("Thank you for staying with us. Your total is $" + getTotalPrice(roomnum));
+		System.out.println("");
 		System.out.println("");
 		System.out.println("Please enter your credit card information...");
 		System.out.println("Card number:");
@@ -269,7 +342,7 @@ public class Employee extends HotelMain {
 		}
 		connect = DriverManager.getConnection(host, user, pw);
 		PreparedStatement s = (PreparedStatement) connect
-				.prepareStatement("SELECT nights FROM hotel WHERE roomNum = ?");
+				.prepareStatement("SELECT nights AND bill FROM hotel WHERE roomNum = ?");
 		s.setInt(1, roomnum);
 		rs = s.executeQuery();
 		while (rs.next()) {
@@ -278,7 +351,6 @@ public class Employee extends HotelMain {
 			// System.out.println("$" + pr);
 		}
 		return 0;
-
 
 	}
 
@@ -304,18 +376,13 @@ public class Employee extends HotelMain {
 
 	public static void checkRoomStatus() throws ClassNotFoundException, SQLException {
 		// System.out.println("check room status");
-
 		Database.printDB();
-
 		// System.out.println(room);
 	}
 
 	public static void scheduleEmployee() throws ClassNotFoundException, SQLException {
-
-		int hours = 0;
 		System.out.println("Schedule: ");
-		printSchedule();
-
+		Database.printSchedule();
 		System.out.println("Who would you like to schedule: ");
 		Scanner scanner = new Scanner(System.in);
 		String input = scanner.next();
@@ -327,31 +394,13 @@ public class Employee extends HotelMain {
 		String time = scan.next();
 		connect = DriverManager.getConnection(host, user, pw);
 		Statement stmt3 = connect.createStatement();
-
-		String query = "UPDATE schedule SET who = '" + input + "' WHERE day = '" + day + "' AND time = '" + time + "'";
-		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
-		preparedStmt.execute();
-
 		rs = stmt3.executeQuery("SELECT day, time FROM schedule WHERE who = '" + input + "'");
 		while (rs.next()) {
 			day = rs.getString(1);
 			time = rs.getString(2);
+			System.out.println(input + " is schduled: " + day + time);
 
-			System.out.println(input + " is schduled: " + day + " " + time);
 		}
-		connect = DriverManager.getConnection(host, user, pw);
-		PreparedStatement s = (PreparedStatement) connect
-				.prepareStatement("SELECT hours FROM schedule WHERE who = '" + input + "'");
-		rs = s.executeQuery();
-
-		int tot = 0;
-		while (rs.next()) {
-			int pr = rs.getInt(1);
-			tot = tot + pr;
-		}
-		System.out.println(input + " is scheduled " + tot + " hours this week.");
-
-
 	}
 
 	public static void cleanStatus() throws SQLException {
@@ -381,7 +430,7 @@ public class Employee extends HotelMain {
 		}
 	}
 
-	public static void handleEmployee() throws ClassNotFoundException, SQLException {
+	public static void handleEmployee() throws ClassNotFoundException, SQLException, IOException {
 		employeeTypeScreen();
 		userType = "none";
 		welcomeScreen();
@@ -452,9 +501,7 @@ public class Employee extends HotelMain {
 			}
 		} else if (choice == 3) {
 			// scanner.close();
-
-			printSchedule();
-
+			Database.printSchedule();
 			// return;
 		} else if (choice == 4) {
 			connect = DriverManager.getConnection(host, user, pw);
