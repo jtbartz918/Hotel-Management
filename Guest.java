@@ -1,4 +1,6 @@
+
 package hm;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -18,9 +20,11 @@ public class Guest extends HotelMain {
 
 	final private static String host = "jdbc:mysql://localhost:3306/sys";
 	final private static String user = "root";
+
 	final private static String pw = "******";
 
 	public static String HotelUser = "";
+
 
 	public static void printDB() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
@@ -34,14 +38,18 @@ public class Guest extends HotelMain {
 
 	}
 
+
 	public static void guestBookRoom(String uname) throws SQLException, ClassNotFoundException {
+
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Please enter the room you would like to book");
 		int roomnum = scanner.nextInt();
 		if (roomnum != 100 && roomnum != 110 && roomnum != 120 && roomnum != 130 && roomnum != 140 && roomnum != 150
 				&& roomnum != 160 && roomnum != 170 && roomnum != 180 && roomnum != 190 && roomnum != 200) {
 			System.out.println("The room you are trying to book does not exist please try again");
+
 			guestBookRoom(uname);
+
 		}
 		System.out.println("Please enter the amount of nights you wish to stay");
 		int nights = scanner.nextInt();
@@ -50,11 +58,14 @@ public class Guest extends HotelMain {
 		statement = connect.createStatement();
 		// java.sql.PreparedStatement ps = connect.prepareStatement("INSERT INTO
 		// hotel(vac) where roomNum = ?");
+
 		String query = "UPDATE hotel SET vac = 1, clean = 1, nights = ?, guest='"+uname+"' WHERE roomNum = ?";
+
 		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
 		preparedStmt.setInt(1, nights);
 		preparedStmt.setInt(2, roomnum);
 		preparedStmt.execute();
+
 		System.out.println("Your room " + roomnum+" has been booked for "+nights);
 		HotelMain.welcomeScreen();
 
@@ -206,6 +217,7 @@ public class Guest extends HotelMain {
 		String query = "UPDATE Guest SET points = '"+points+"' WHERE uname = '"+g+"'";
 		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
 		preparedStmt.execute();
+
 
 	}
 }

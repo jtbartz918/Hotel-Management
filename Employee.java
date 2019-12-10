@@ -1,3 +1,4 @@
+
 package hm;
 
 import java.sql.Connection;
@@ -57,10 +58,12 @@ public class Employee extends HotelMain {
 		System.out.println("1. See status of each room");
 		System.out.println("2. Something");
 		System.out.println("3. Process payment");
+
 		System.out.println("4. Checkin");
 		System.out.println("5. Checkout");
 		System.out.println("6. Check cleanliness status of room");
 		// System.out.println("7. Get price");
+
 		int choice = scanner.nextInt();
 		if (choice == 1) {
 			// scanner.close();
@@ -74,12 +77,13 @@ public class Employee extends HotelMain {
 			cashOut();
 			// return;
 		} else if (choice == 4) {
+
 			checkIn();
 		} else if (choice == 5) {
 			checkOut();
 		} else if (choice == 6) {
 			cleanStatus();
-			;
+
 		} else {
 			System.out.println("Input is not a user type.");
 		}
@@ -128,6 +132,7 @@ public class Employee extends HotelMain {
 
 	}
 
+
 	public static void managerMainScreen() throws ClassNotFoundException, SQLException {
 		System.out.println("Menu:");
 		Scanner scanner = new Scanner(System.in);
@@ -166,7 +171,9 @@ public class Employee extends HotelMain {
 		}
 	}
 
+
 	public static void checkOut() throws SQLException, ClassNotFoundException {
+
 		Scanner scanner = new Scanner(System.in);
 
 		System.out.println("Please enter the room you would like to checkout from?");
@@ -178,6 +185,7 @@ public class Employee extends HotelMain {
 		}
 		connect = DriverManager.getConnection(host, user, pw);
 		statement = connect.createStatement();
+
 		// java.sql.PreparedStatement ps = connect.prepareStatement(" INTO
 		// hotel(vac) where roomNum = ?");
 		connect = DriverManager.getConnection(host, user, pw);
@@ -271,6 +279,7 @@ public class Employee extends HotelMain {
 		}
 		return 0;
 
+
 	}
 
 	public static void getPrice() throws SQLException {
@@ -295,13 +304,18 @@ public class Employee extends HotelMain {
 
 	public static void checkRoomStatus() throws ClassNotFoundException, SQLException {
 		// System.out.println("check room status");
+
 		Database.printDB();
+
 		// System.out.println(room);
 	}
 
 	public static void scheduleEmployee() throws ClassNotFoundException, SQLException {
+
+		int hours = 0;
 		System.out.println("Schedule: ");
-		Database.printSchedule();
+		printSchedule();
+
 		System.out.println("Who would you like to schedule: ");
 		Scanner scanner = new Scanner(System.in);
 		String input = scanner.next();
@@ -313,13 +327,31 @@ public class Employee extends HotelMain {
 		String time = scan.next();
 		connect = DriverManager.getConnection(host, user, pw);
 		Statement stmt3 = connect.createStatement();
+
+		String query = "UPDATE schedule SET who = '" + input + "' WHERE day = '" + day + "' AND time = '" + time + "'";
+		java.sql.PreparedStatement preparedStmt = connect.prepareStatement(query);
+		preparedStmt.execute();
+
 		rs = stmt3.executeQuery("SELECT day, time FROM schedule WHERE who = '" + input + "'");
 		while (rs.next()) {
 			day = rs.getString(1);
 			time = rs.getString(2);
-			System.out.println(input + " is schduled: " + day + time);
 
+			System.out.println(input + " is schduled: " + day + " " + time);
 		}
+		connect = DriverManager.getConnection(host, user, pw);
+		PreparedStatement s = (PreparedStatement) connect
+				.prepareStatement("SELECT hours FROM schedule WHERE who = '" + input + "'");
+		rs = s.executeQuery();
+
+		int tot = 0;
+		while (rs.next()) {
+			int pr = rs.getInt(1);
+			tot = tot + pr;
+		}
+		System.out.println(input + " is scheduled " + tot + " hours this week.");
+
+
 	}
 
 	public static void cleanStatus() throws SQLException {
@@ -420,7 +452,9 @@ public class Employee extends HotelMain {
 			}
 		} else if (choice == 3) {
 			// scanner.close();
-			Database.printSchedule();
+
+			printSchedule();
+
 			// return;
 		} else if (choice == 4) {
 			connect = DriverManager.getConnection(host, user, pw);

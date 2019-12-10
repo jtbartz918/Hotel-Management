@@ -1,4 +1,6 @@
+
 package hm;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,26 +19,30 @@ public class HotelMain {
 	private PreparedStatement preparedStatement = null;
 	private static ResultSet rs = null;
 
-//	final private static String host = "jdbc:mysql://localhost:3306/sys";
-//	final private static String user = "root";
-//	final private static String pw = "Isigna918*";
+
+	final private static String host = "jdbc:mysql://localhost:3306/sys";
+	final private static String user = "root";
+	final private static String pw = "12345678";
+
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		welcomeScreen();
 
 	}
 
-//	public static void printDB() throws ClassNotFoundException, SQLException {
-//		Class.forName("com.mysql.jdbc.Driver");
-//		connect = DriverManager.getConnection(host, user, pw);
-//		statement = connect.createStatement();
-//
-//		rs = statement.executeQuery("select * from hotel");
-//
-//		while (rs.next())
-//			System.out.println(rs.getInt(1) + "  " + rs.getString(2));
-//
-//	}
+
+	public static void printDB() throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		connect = DriverManager.getConnection(host, user, pw);
+		statement = connect.createStatement();
+
+		rs = statement.executeQuery("select * from hotel");
+
+		while (rs.next())
+			System.out.println(rs.getInt(1) + "  " + rs.getString(2));
+
+	}
+
 
 	public static void welcomeScreen() throws ClassNotFoundException, SQLException {
 		loginScreen();
@@ -72,4 +78,6 @@ public class HotelMain {
 		scanner.close();
 	}
 
+
 }
+
