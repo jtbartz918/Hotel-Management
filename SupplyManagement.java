@@ -23,6 +23,12 @@ public class SupplyManagement {
 	//Current number of items in the system
 	private static int ec, sc, dc, nc, ac, c, f, o;
 	
+	public static void main(String[] args) {
+		initSupplies();
+		billOrder(orders[0]);
+		handleSupplyPage();
+	}
+	
 	public static void printSupplyScreen() {
 		System.out.println("\n1. View Supplies");
 		System.out.println("2. Orders");
@@ -39,6 +45,7 @@ public class SupplyManagement {
 		System.out.println("2. Finalize an Order");
 		System.out.println("3. View Orders");
 		System.out.println("4. Return to Supply Menu");
+		System.out.println("Enter your choice:");
 	}
 	
 	public static void handleSupplyPage() {
@@ -424,7 +431,7 @@ public class SupplyManagement {
 		orderNumber++;
 		System.out.println("\nOrder #" + order.orderNumber);
 		System.out.println(order.lineItems);
-		System.out.println("Total: $" + order.total);
+		System.out.println("Total: $" + df.format(order.total));
 		System.out.println("Would you like to finalize this order now?");
 		System.out.println("Enter 1 for yes and 0 for no");
 		choice = scanner.nextInt();
@@ -441,10 +448,13 @@ public class SupplyManagement {
 	public static void finalizeOrder() {
 		Scanner scanner = new Scanner(System.in);
 		Order[] o = new Order[15];
+		int orderNumber = 0;
 		boolean needFinalized = false;
 		for(int i = 0; i < numO; i++) {
 			if(!orders[i].billed) {
-				System.out.println((i+1) + ". Order " + orders[i].orderNumber + " has not been billed and has a total of $" + orders[i].total + ".");
+				System.out.println((orderNumber + 1) + ". Order " + orders[i].orderNumber + " has not been billed and has a total of $" + orders[i].total + ".");
+				o[orderNumber] = orders[i];
+				orderNumber++;
 				needFinalized = true;
 			}
 		}
@@ -456,7 +466,7 @@ public class SupplyManagement {
 		int choice = scanner.nextInt();
 		choice--;
 		int index = choice;
-		System.out.println("Order #" + o[choice].orderNumber + " will be finalized for $" + df.format(o[choice].total) + ".");
+		System.out.println("Order #" + o[index].orderNumber + " will be finalized for $" + df.format(o[index].total) + ".");
 		System.out.println("Do you want to finalize this order?");
 		System.out.println("Enter 1 for yes and 0 for no");
 		choice = scanner.nextInt();
@@ -490,41 +500,49 @@ public class SupplyManagement {
 			for(int j = 0; j < ec; j++) {
 				if(entreeChoices[j].name.equals(name)) {
 					entreeChoices[j].quantity += q;
+					break;
 				}
 			}
 			for(int j = 0; j < sc; j++) {
 				if(sideChoices[j].name.equals(name)) {
 					sideChoices[j].quantity += q;
+					break;
 				}
 			}
 			for(int j = 0; j < dc; j++) {
 				if(dessertChoices[j].name.equals(name)) {
 					dessertChoices[j].quantity += q;
+					break;
 				}
 			}
 			for(int j = 0; j < nc; j++) {
 				if(nonAlcoholicChoices[j].name.equals(name)) {
 					nonAlcoholicChoices[j].quantity += q;
+					break;
 				}
 			}
 			for(int j = 0; j < ac; j++) {
 				if(alcoholicChoices[j].name.equals("name")) {
 					alcoholicChoices[j].quantity += q;
+					break;
 				}
 			}
 			for(int j = 0; j < c; j++) {
 				if(otherSupplies[j].name.equals(name)) {
 					otherSupplies[j].quantity += q;
+					break;
 				}
 			}
 			for(int j = 0; j < f; j++) {
 				if(frontDeskSupplies[j].name.equals(name)) {
 					frontDeskSupplies[j].quantity += q;
+					break;
 				}
 			}
 			for(int j = 0; j < o; j++) {
 				if(otherSupplies[j].name.equals(name)) {
 					otherSupplies[j].quantity += q;
+					break;
 				}
 			}
 		}
@@ -691,6 +709,19 @@ public class SupplyManagement {
 			double price = getNewItemPrice();
 			int quantity = getNewItemQuantity();
 			Item newItem = new Item(name, type, info, price, quantity);
+			if(newItem.type.equals("Cleaning")) {
+				cleaningSupplies[c] = newItem;
+				c++;
+			} else if(newItem.type.equals("FrontDesk")) {
+				frontDeskSupplies[f] = newItem;
+				f++;
+			} else if(newItem.type.equals("Other")) {
+				otherSupplies[o] = newItem;
+				o++;
+			} else {
+				System.out.println("Item not added.");
+			}
+			System.out.println(newItem.name + " has been added to the system.");
 		}
 	}
 	
@@ -704,8 +735,25 @@ public class SupplyManagement {
 		double costPerUnit = getNewItemPrice();
 		int quantity = getNewItemQuantity();
 		MenuItem newItem = new MenuItem(name, foodType, vegOp, price, costPerUnit, quantity);
-		System.out.println(newItem);
-		
+		if(newItem.foodType.equals("Entree")) {
+			entreeChoices[ec] = newItem;
+			ec++;
+		} else if(newItem.foodType.equals("Side")) {
+			sideChoices[sc] = newItem;
+			sc++;
+		} else if(newItem.foodType.equals("Dessert")) {
+			dessertChoices[dc] = newItem;
+			dc++;
+		} else if(newItem.foodType.equals("NonAlcoholicDrink")) {
+			nonAlcoholicChoices[nc] = newItem;
+			nc++;
+		} else if(newItem.foodType.equals("Drink")) {
+			alcoholicChoices[ac] = newItem;
+			ac++;
+		} else {
+			System.out.println("Menu item not added");
+		}
+		System.out.println(newItem.name + " has been added to the system.");
 	}
 	
 	public static void updateItemInfo() {
@@ -822,7 +870,7 @@ public class SupplyManagement {
 					name = getNewItemName();
 					item.name = name;
 				}
-				System.out.println("Do you want to edit the description of " + name +" is:\n" + item.info + "\nDo you want to change it?");
+				System.out.println("The description of " + name +" is:\n" + item.info + "\nDo you want to change it?");
 				System.out.println("Enter 1 for yes and 0 for no:");
 				choice = scanner.nextInt();
 				if(choice == 1) {
@@ -948,8 +996,11 @@ public class SupplyManagement {
 		Scanner scanner = new Scanner(System.in);
 		viewSupplies();
 		System.out.println("Which item would you like to delete from the system?");
-		System.out.println("Enter the item number:");
+		System.out.println("Enter the item number or 0 to stop removing items:");
 		int choice = scanner.nextInt();
+		if(choice == 0) {
+			return;
+		}
 		//Get the item that will be removed.
 		choice--;
 		int index = -1;
@@ -1035,47 +1086,47 @@ public class SupplyManagement {
 				} else if(mItem.foodType.equals("Side")) {
 					for(int i = index; i < (sc - 1); i++) {
 						sideChoices[i] = sideChoices[i+1];
-						sc--;
-						sideChoices[sc] = null;
 					}
+					sc--;
+					sideChoices[sc] = null;
 				} else if(mItem.foodType.equals("Dessert")) {
 					for(int i = index; i < (dc - 1); i++) {
 						dessertChoices[i] = dessertChoices[i+1];
-						dc--;
-						dessertChoices[dc] = null;
 					}
+					dc--;
+					dessertChoices[dc] = null;
 				} else if(mItem.foodType.equals("NonAlcoholicDrink")) {
 					for(int i = index; i < (nc - 1); i++) {
 						nonAlcoholicChoices[i] = nonAlcoholicChoices[i+1];
-						nc--;
-						nonAlcoholicChoices[nc] = null;
 					}
+					nc--;
+					nonAlcoholicChoices[nc] = null;
 				} else if(mItem.foodType.equals("Drink")) {
 					for(int i = index; i < (ac - 1); i++) {
 						alcoholicChoices[i] = alcoholicChoices[i+1];
-						ac--;
-						alcoholicChoices[ac] = null;
 					}
+					ac--;
+					alcoholicChoices[ac] = null;
 				}
 			} else {
 				if(item.type.equals("Cleaning")) {
 					for(int i = index; i < c; i++) {
 						cleaningSupplies[i] = cleaningSupplies[i+1];
-						c--;
-						cleaningSupplies[c] = null;
 					}
+					c--;
+					cleaningSupplies[c] = null;
 				} else if(item.type.equals("FrontDesk")) {
 					for(int i = index; i < f; i++) {
 						frontDeskSupplies[i] = frontDeskSupplies[i+1];
-						f--;
-						frontDeskSupplies[f] = null;
 					}
+					f--;
+					frontDeskSupplies[f] = null;
 				} else if(item.type.equals("Other")) {
 					for(int i = index; i < f; i++) {
 						otherSupplies[i] = otherSupplies[i+1];
-						f--;
-						otherSupplies[f] = null;
 					}
+					f--;
+					otherSupplies[f] = null;
 				}
 			}
 			System.out.println("The item has been removed from the system. Do you want to delete another item?");
