@@ -98,7 +98,7 @@ public class Employee extends HotelMain {
 			String path = Image.addImg();
 			connect = DriverManager.getConnection(host, user, pw);
 			Statement statement = connect.createStatement();
-			statement.executeUpdate("UPDATE Guest SET imgPath = '"+path+"' WHERE uname = '"+s+"'");
+			statement.executeUpdate("UPDATE Employee SET imgPath = '"+path+"' WHERE uname = '"+s+"'");
 			}
 			catch(Exception e){
 				System.out.println("You entered the incorrect username please try again");
@@ -109,9 +109,22 @@ public class Employee extends HotelMain {
 
 	private static void imgView() throws SQLException, IOException, ClassNotFoundException {
 		// TODO Auto-generated method stub
-		Scanner g = new Scanner(System.in);
-		System.out.println("Enter in the username of the guest you would like to view the image of");
-		String s = g.nextLine();
+		String s = "";
+		Scanner who = new Scanner(System.in);
+	Scanner ge = new Scanner(System.in);
+		System.out.println("Would you like to view a guest or an employee? Press 1 for guest 2 for employee");
+		int p = who.nextInt();
+		if(p==1) {
+//		System.out.println("Enter in the username of the guest you would like to view the image of");
+//		String s = g.nextLine();
+			System.out.println("Enter in the username of the guest you would like to add the image of");
+			s = ge.nextLine();
+
+		}
+		if(p==2) {
+			System.out.println("Enter in the username of the Employe you would like to add the image of");
+			s = ge.nextLine();
+		}
 		String path = "";
 		try {
 		connect = DriverManager.getConnection(host, user, pw);
